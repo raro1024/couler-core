@@ -1,11 +1,33 @@
+/**
+ * Starts the main Server 
+ */
 var express = require('express');
-var app = express();
+const _db = require('./db.js');
+const db= new _db();
 
-// respond with "hello world" when a GET request is made to the homepage
-app.get('/', function(req, res) {
-  res.send('hello world');
-});
+var app = express();
 let port = 8080;
+
+//Standart json handler
+app.get('/json/*', function(req, res) {
+
+ var parts=req.params["0"].split("/");
+ var module= parts[0];
+ var key=parts[1];
+
+ console.log(module);
+ console.log(key);  
+ if (module===undefined ||key ===undefined )
+ {
+     res.send("404")
+ }
+ else
+ {
+    console.log("send module");  
+ }
+
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
