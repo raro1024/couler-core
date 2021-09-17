@@ -23,7 +23,8 @@ app.get('/json/*', function(req, res) {
  }
  else
  {
-    console.log("send module");  
+    console.log("send module"); 
+    res.send("200")
  }
 
 });
