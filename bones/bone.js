@@ -7,7 +7,6 @@ class Bone {
 
     classname(_class = this) {
         console.log(_class.constructor.name)
-        console.log(_class)
     }
 
    get data()
@@ -18,6 +17,7 @@ class Bone {
    {
        this._value;
    }
+  
 
 
 

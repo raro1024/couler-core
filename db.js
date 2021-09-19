@@ -3,6 +3,7 @@
  * Standart db is main
  */
  const MongoClient = require('mongodb').MongoClient;
+ const ObjectId = require('mongodb').ObjectId; 
  //Fixme Later in config file
  const username="myUserAdmin";
  const password="abc123";
@@ -12,32 +13,44 @@ class DB
 {
     constructor()
     {
-        console.log("Start DB Conection");
-        this.checkIfDBExist();
       
     }
-async connectToDB(_url=undefined)
+async connectToDB(_url=undefined,accesssDB=true)
 {  
 // Replace the uri string with your MongoDB deployment's connection string.
     //const uri =`mongodb://${username}:${password}@${url}?retryWrites=true&writeConcern=majority`; // For local tests
-    var url = _url||'mongodb://localhost:27017/';
+    var url = _url||'mongodb://localhost:27017/main';
     console.log(url)
     //const client = new MongoClient(uri);
-    return  MongoClient.connect(url).catch(err =>{ console.log(err); });
+    return  MongoClient.connect(url)
 
 
 }
 
-async toDB(data, _collection) {
+async toDB(module,data) {
     var client = await this.connectToDB();
-    const result = await client._collection.insertOne(data);
-    console.log(result)
-    return result;
+    var db=client.db();
+    db.collection(module).insertOne(data, function(err, res) {
+        if (err) throw err;
+        client.close();
+    });
+   
 }
 
-async fromDB(_collection)
+async fromDB(module,key)
 {
-    return await _collection.find({}).toArray();
+    var client = await this.connectToDB();
+    var db=client.db();
+    var dataPromies= new Promise((resolve, reject)=>{
+        db.collection(module).findOne({"_id":ObjectId(key)},  function(err, res) {
+            if (err) throw err;
+            client.close();
+            
+            resolve(res);
+        });
+         
+    });
+    return dataPromies;
 
 }
 /**
@@ -50,16 +63,12 @@ var MongoClient = require('mongodb').MongoClient;
 
 var url = "mongodb://localhost:27017/"+dbName;
 
-MongoClient.connect(url, function (err, client) {
-    var db = client.db(dbName);
+MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    //customers is a collection we  want to create                             
-    db.createCollection("user", function (err, result) {
-        if (err) throw err;
-        
-        client.close();
-    });
-});
+    console.log("Database created!");
+    db.close();
+  });
+
 }
 /**
  * 
