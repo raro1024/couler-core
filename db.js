@@ -37,7 +37,7 @@ async toDB(module,data) {
    
 }
 
-async fromDB(module,key)
+async read(module,key)
 {
     var client = await this.connectToDB();
     var db=client.db();
@@ -45,8 +45,40 @@ async fromDB(module,key)
         db.collection(module).findOne({"_id":ObjectId(key)},  function(err, res) {
             if (err) throw err;
             client.close();
+            if(res!=null)
+            {
+                resolve(res);
+            }
+            else
+            {
+                reject();
+            }
             
-            resolve(res);
+        });
+         
+    });
+    return dataPromies;
+
+}
+//get a list of data 
+async list(module,limit=99)
+{   console.log("list data")
+    var client = await this.connectToDB();
+    var db=client.db();
+    var dataPromies= new Promise((resolve, reject)=>{
+        db.collection(module).find({}).limit(limit).toArray(function(err, res) {
+            if (err) throw err;
+            client.close();
+            if(res!=null)
+            {
+                
+                resolve(res);
+            }
+            else
+            {
+                reject();
+            }
+            
         });
          
     });
@@ -99,4 +131,4 @@ async checkIfDBExist(dbName="main",client=undefined)
    
 }
 }
-module.exports = DB;
+module.exports = new DB();
