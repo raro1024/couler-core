@@ -1,3 +1,4 @@
+const e = require('express');
 const express = require('express');
 const router = express.Router();
 
@@ -6,41 +7,50 @@ const utils = require("../utils.js");
 /**
  * Load Instance of a Module the call the handler
  * If the Handler is Async the data will send when the Promies is fullfiled
+ * First the Folder with normal modules will check
  */
 router.get('/json/:module/:handler/*', (req, res)=>{
     //Load Module
-    console.log(req.params.handler)
-    const module= require("../modules/"+req.params.module);
-    const handler=new module()[req.params.handler];
+    var module_;
+    try{
+        module_=require("../../modules/"+req.params.module);
+    }catch(e){}
+    if (module_===undefined)
+    {
+         module_= require("../modules/"+req.params.module);
+    }
+    const m_=new module_();
+    const handler=m_[req.params.handler];
+    if (handler===undefined)
+    {
+        res.end("404 Handler not Found")
+        return;
+    }
     switch(handler.constructor.name)
     {
         case "AsyncFunction":
-            handler(req.params["0"]).then((data)=>{res.send(data)})
+                m_[req.params.handler](req.params["0"]).then((data)=>{
+                if(typeof data==="object")
+                {
+                    res.json(data)
+                    res.end()
+                }
+                else
+                {
+                    res.end(data)
+                }
+                
+            })
             break
         case "Function":
-            res.send(handler(req.params["0"]))
+            res.end(handler(req.params["0"]))
             break
-    }
-    
-    
-   
-});
-router.get('/json/:module/view/:key', (req, res)=>{
-    var module=req.params.module;
-    var key=req.params.key;
-    if(key==="self")
-    {
-        console.log("try to get current user");
-        console.log("id="+utils.getCurrentUser());
 
-        res.send(utils.getCurrentUser());
-        return;
     }
-    db.read(module,key).then((data)=>
-    {
-        res.send(data);
-    }).catch(()=>{
-        res.send("404");
-    });
 });
+router.post("/json/:module/add/*", (req, res)=>{
+
+});
+
+
 module.exports = router;

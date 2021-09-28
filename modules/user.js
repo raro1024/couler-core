@@ -1,6 +1,9 @@
 const stringBone = require('../bones/stringbone.js');
 const db = require('../db.js');
 const utils = require('../utils.js');
+const module_ = require('./module.js');
+
+
 
 class UserSkel {
     constructor() {
@@ -9,9 +12,17 @@ class UserSkel {
         this.password = new stringBone();
     }
 
+}
+class User extends module_
+{
+    constructor() {
+        super();
+        console.log("Enter conster")
+        console.log(this)
+    }
     classname(_class = this) {
         console.log(_class.constructor.name)
-        console.log(_class["username"])
+        return _class.constructor.name.toLowerCase();
     }
 
     getDataFromClient(data) {
@@ -29,12 +40,6 @@ class UserSkel {
         }
         return this
     }
-    toDB()
-    {
-        console.log("Write data to DB")
-        db.toDB("user",this)
-
-    }
     /**
      * Fill Skeleton with data
      * @param {string} key
@@ -42,7 +47,6 @@ class UserSkel {
      */
     async fromDB(key)
     {
-        console.log("Get data form DB")
         var vals =db.fromDB("user",key)
         return vals.then((data)=>{
             for (const [key, value] of Object.entries(data)) {
@@ -59,16 +63,38 @@ class UserSkel {
         var k =utils.getSessionKey();
         console.log(k);
         utils.setUserSession("6147824759f79e71d01ffc27",k)
+        return "login - "+ k;
         
     }
-    async getInfo()
+    /**
+     * 
+     * @param {string} key 
+     *
+     * @returns {object} Object of user
+     * Function must clear Password out of the object 
+     */
+    async view(key)
     {
-        var user =await utils.getCurrentUser();
-        console.log(user)
-        return user
+
+        if (key==="self")
+        {
+            var userpromise =  utils.getCurrentUser().then(data=>data);
+        }
+        else
+        {
+            var userpromise = db.read(this.classname(),key);
+        }
+        userpromise.then(user=>{
+            delete user["password"];
+        });
+        
+        return userpromise;
+       
     }
 
-
-
+    async add(data)
+    {
+        return super.add(this.classname(),data);
+    }
 }
-module.exports=UserSkel
+module.exports=User

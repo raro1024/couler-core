@@ -20,17 +20,21 @@ function getSessionKey()
 function getCurrentUser()
 {
     const sessionpromise= db.read("sessions",{"sessionID": getSessionKey()});
-    sessionpromise.then((data)=>{
-        console.log(data);
-        db.read("user",data["userkey"]).then((data)=>{
-            return data;
-        })
+    const userpromise= new Promise((resolve, reject)=>{
+        sessionpromise.then((data)=>{
+            console.log("has session")
+            db.read("user",data["userkey"]).then((data)=>{
+            resolve(data);
+            })
     }).catch(err=>{
-        return undefined;
+       reject();
     })
-    return sessionpromise
+   
+    });
+    return userpromise;
    
 }
+
 function setUserSession(userkey)
 {
    
@@ -39,9 +43,15 @@ function setUserSession(userkey)
     db.toDB("sessions",{"sessionID":sessionID,"userkey":userkey});
 }
 
+function isPostRequest()
+{
+    const getRequestData =require("./main");
+    return getRequestData()["method"]=="POST"
+}
 module.exports=
 {
     getCurrentUser,
     setUserSession,
-    getSessionKey
+    getSessionKey,
+    isPostRequest,
 };
