@@ -11,13 +11,13 @@ var request;
 var userid = "6147824759f79e71d01ffc27";
 
 let port = 8080;
-/*app.get("*",function(req, res,next) 
+app.get("*",function(req, res,next) 
 {
     console.log("Set user id")
     request=req;
     next();
 });
-*/
+
 //Standart json handler
 app.use(jsonhandler);
 //Standart html handler

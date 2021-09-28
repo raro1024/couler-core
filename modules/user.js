@@ -54,11 +54,18 @@ class UserSkel {
     }
     async login(data)
     {
+
         console.log("user login")
         var k =utils.getSessionKey();
         console.log(k);
         utils.setUserSession("6147824759f79e71d01ffc27",k)
-        return "123";
+        
+    }
+    async getInfo()
+    {
+        var user =await utils.getCurrentUser();
+        console.log(user)
+        return user
     }
 
 

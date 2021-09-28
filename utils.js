@@ -13,19 +13,29 @@ function getSessionKey()
     
     return ssid ;
 }
+/**
+ * Function to get the current user
+ * @returns Promies
+ */
 function getCurrentUser()
 {
-    const getRequestData =require("./main");
-    var ssid = getRequestData().sessionID;
-    
-    return ssid ;
+    const sessionpromise= db.read("sessions",{"sessionID": getSessionKey()});
+    sessionpromise.then((data)=>{
+        console.log(data);
+        db.read("user",data["userkey"]).then((data)=>{
+            return data;
+        })
+    }).catch(err=>{
+        return undefined;
+    })
+    return sessionpromise
+   
 }
 function setUserSession(userkey)
 {
    
     const getRequestData =require("./main");
     var sessionID = getRequestData().sessionID;   
-    var data 
     db.toDB("sessions",{"sessionID":sessionID,"userkey":userkey});
 }
 

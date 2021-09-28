@@ -39,12 +39,21 @@ async toDB(module,data) {
 
 async read(module,key)
 {
+
+
     var client = await this.connectToDB();
     var db=client.db();
     var dataPromies= new Promise((resolve, reject)=>{
-        db.collection(module).findOne({"_id":ObjectId(key)},  function(err, res) {
+        console.log(typeof key)
+        if(typeof key==="string")
+        {
+            key = {"_id":ObjectId(key)}
+        }
+        console.log(key);
+        db.collection(module).findOne(key,  function(err, res) {
             if (err) throw err;
             client.close();
+            console.log("data in");
             if(res!=null)
             {
                 resolve(res);
