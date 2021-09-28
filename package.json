@@ -18,6 +18,7 @@
   "homepage": "https://github.com/raro1024/js-core#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "express-session": "^1.17.2",
     "mongodb": "^4.1.2"
   }
 }

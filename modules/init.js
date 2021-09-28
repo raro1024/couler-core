@@ -1,3 +1,3 @@
-const rawModule = require('./raw'); //Import Raw Module
+const user = require('./user'); //Import USer Module
 
-module.exports={rawModule}
+module.exports={user}

@@ -3,7 +3,9 @@
  * -view
  * -list
  */
- const db = require('../db.js');
+
+const db = require('../db.js');
+const utils = require("../utils.js");
 class JSONHandler
 {
     constructor()
@@ -12,6 +14,14 @@ class JSONHandler
     }
     view(module,key,res)
     {
+        if(key==="self")
+        {
+            console.log("try to get current user");
+            console.log("id="+utils.getCurrentUser());
+
+            res.send(utils.getCurrentUser());
+            return;
+        }
         db.read(module,key).then((data)=>
         {
             res.send(data);
@@ -33,16 +43,18 @@ class JSONHandler
     handle(req,res)
     {
         var parts=req.params["0"].split("/");
-        console.log(parts)
-        if (parts[1]=="view")
+        switch(parts[1])
         {
-            this.view( parts[0],parts[2],res);
+            case "view":
+                this.view( parts[0],parts[2],res);
+                break;
+            case "list":
+                this.list(parts[0],res);
+                break;
+            default:
+                res.send("404")
+
         }
-        if (parts[1]=="list")
-        {
-            this.list(parts[0],res);
-        }
-        return
     }
 }
 module.exports=new  JSONHandler();

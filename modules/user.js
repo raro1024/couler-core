@@ -1,8 +1,10 @@
 const stringBone = require('../bones/stringbone.js');
-const _db = require('../db.js');
-const db= new _db();
+const db = require('../db.js');
+const utils = require('../utils.js');
+
 class UserSkel {
     constructor() {
+        this.key = new stringBone(); //Set every time to find an User
         this.username = new stringBone();
         this.password = new stringBone();
     }
@@ -25,6 +27,7 @@ class UserSkel {
         for (const [key, value] of Object.entries(this)) {
              console.log(key,value.data)
         }
+        return this
     }
     toDB()
     {
@@ -32,6 +35,11 @@ class UserSkel {
         db.toDB("user",this)
 
     }
+    /**
+     * Fill Skeleton with data
+     * @param {string} key
+     * @returns 
+     */
     async fromDB(key)
     {
         console.log("Get data form DB")
@@ -43,6 +51,14 @@ class UserSkel {
             
         });
         
+    }
+    async login(data)
+    {
+        console.log("user login")
+        var k =utils.getSessionKey();
+        console.log(k);
+        utils.setUserSession("6147824759f79e71d01ffc27",k)
+        return "123";
     }
 
 
