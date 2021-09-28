@@ -2,7 +2,7 @@
  * Standart module where other can extends from
  */
  const utils = require('../utils.js');
-class module_
+class List
 {
     constructor()
     {
@@ -19,8 +19,10 @@ class module_
         {
             return "Add Request only over POST";
         }
+        console.log(module)
+        console.log(data)
         return("ok")
 
     }
 }
-module.exports=module_
+module.exports=List

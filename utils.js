@@ -46,7 +46,8 @@ function setUserSession(userkey)
 function isPostRequest()
 {
     const getRequestData =require("./main");
-    return getRequestData()["method"]=="POST"
+    console.log(getRequestData()["method"])
+    return getRequestData()["method"]==="POST"
 }
 module.exports=
 {

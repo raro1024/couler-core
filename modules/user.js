@@ -1,7 +1,7 @@
 const stringBone = require('../bones/stringbone.js');
 const db = require('../db.js');
 const utils = require('../utils.js');
-const module_ = require('./module.js');
+const List = require('./list.js');
 
 
 
@@ -13,15 +13,13 @@ class UserSkel {
     }
 
 }
-class User extends module_
+class User extends List
 {
     constructor() {
         super();
-        console.log("Enter conster")
         console.log(this)
     }
     classname(_class = this) {
-        console.log(_class.constructor.name)
         return _class.constructor.name.toLowerCase();
     }
 
@@ -45,7 +43,7 @@ class User extends module_
      * @param {string} key
      * @returns 
      */
-    async fromDB(key)
+    async fromDB({key})
     {
         var vals =db.fromDB("user",key)
         return vals.then((data)=>{
@@ -56,7 +54,7 @@ class User extends module_
         });
         
     }
-    async login(data)
+    async login({data})
     {
 
         console.log("user login")
@@ -73,9 +71,10 @@ class User extends module_
      * @returns {object} Object of user
      * Function must clear Password out of the object 
      */
-    async view(key)
+    async view({key})
     {
-
+        console.log("params are")
+        console.log(key)
         if (key==="self")
         {
             var userpromise =  utils.getCurrentUser().then(data=>data);
@@ -86,13 +85,13 @@ class User extends module_
         }
         userpromise.then(user=>{
             delete user["password"];
-        });
+        }).catch((err)=>{return err});
         
         return userpromise;
        
     }
 
-    async add(data)
+    async add({data})
     {
         return super.add(this.classname(),data);
     }

@@ -53,7 +53,6 @@ async read(module,key)
         db.collection(module).findOne(key,  function(err, res) {
             if (err) throw err;
             client.close();
-            console.log("data in");
             if(res!=null)
             {
                 resolve(res);

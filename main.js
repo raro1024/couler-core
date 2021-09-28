@@ -11,7 +11,7 @@ var request;
 var userid = "6147824759f79e71d01ffc27";
 
 let port = 8080;
-app.get("*",function(req, res,next) 
+app.all("*",function(req, res,next) 
 {
     console.log("Set user id 1")
     request=req;
