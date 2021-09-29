@@ -1,24 +1,33 @@
+import { stringBone } from "./bones/stringbone";
+import { dateBone } from "./bones/datebone";
+
+import {db} from "./db";
 /**
  * Basic Skeleton class
  */
- const db = require('./db.js');
-class Skeleton
+
+export class Skeleton
 {
-    kindname=""
+    kindname:string="user";
+    key:stringBone;
+    createdate:dateBone;
+    changedate:dateBone;
     constructor()
     {
-
+        this.key = new stringBone(); //Set every time to find an Object
+        this.createdate=new dateBone({defaultValue:Date.now()});
+        this.changedate=new dateBone({defaultValue:Date.now()});
     }
     /**
      * 
-     * @param {object} data This value is an object that contains all data for the Bones
+     * @param {object} requestdata This value is an object that contains all data for the Bones
      * 
      * Only if the bone exist the Data will be write in the Database
      * 
      */
     writeBones(requestdata)
     {
-
+        console.log("Fill bones with Data from DB or reqes")
         for (const [bonename, bone] of Object.entries(this)) {
             if(typeof bone==="object")
             {  
@@ -42,5 +51,9 @@ class Skeleton
     {
         db.toDB(this.kindname,this.readBones());
     }
+    
+    async fromDB(key)
+    {
+          
+    }
 }
-module.exports=Skeleton;

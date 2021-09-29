@@ -1,3 +1,3 @@
-const user = require('./user'); //Import USer Module
 
-module.exports={user}
+export {User} from "./user";
+export {Index} from "./index";

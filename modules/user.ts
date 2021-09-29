@@ -1,31 +1,33 @@
-const stringBone = require('../bones/stringbone.js');
 
-
-const Skeleton = require('../skeleton.js');
-
-import { List } from "./list";
+import {Skeleton} from "../skeleton";
+import { List } from "../prototypes/list";
 import {db} from "../db";
 import {utils} from "../utils";
 import {exposed} from "../decerators";
+import { stringBone } from "../bones/stringbone";
+import { passswordBone } from "../bones/passwordbone";
 
 
 
 class UserSkel extends Skeleton {
-    kindname="user" //For Routing and DB Shit
+    kindname="user"
+    name: stringBone;
+    password: passswordBone;
+    rand: stringBone;
+   
     constructor() {
         super();
-        this.key = new stringBone(); //Set every time to find an User
-        this.username = new stringBone();
-        this.password = new stringBone();
-        this.rand = new stringBone({default:"defaulttest"})
+        this.name = new stringBone({required:true});
+        this.password = new passswordBone();
+        this.rand = new stringBone({defaultValue:"defaulttest"})
     }
 
 }
-class User extends List
+export class User extends List
 {
+    kindname="user" //For Routing and DB Shit
     constructor() {
         super();
-        console.log(this)
     }
     classname(_class = this) {
         return _class.constructor.name.toLowerCase();
@@ -51,7 +53,7 @@ class User extends List
      * @param {string} key
      * @returns 
      */
-     @exposed
+    @exposed
     async fromDB({key})
     {
         var vals =db.read("user",key)
@@ -64,13 +66,20 @@ class User extends List
         
     }
     @exposed
-    async login({data})
+    async login(data)
     {
-
+        if(!utils.isPostRequest())
+        {
+            throw "Post only"
+        }
         console.log("user login")
-        var k =utils.getSessionKey();
-        utils.setUserSession("6147824759f79e71d01ffc27")
-        return "login - "+ k;
+        console.log(data)
+        console.log(data["name"])
+        var skel = this.loginSkel();
+        await db.read("user",{"name":data["name"]}).then(userdata=>{skel.writeBones(userdata)});
+        //skel.password.check(data["password"])
+        console.log(skel.password.check(data["password"]))
+        return skel.password.check(data["password"]);
         
     }
    
@@ -88,6 +97,10 @@ class User extends List
     {
         return new UserSkel();
     }
+    loginSkel()
+    {
+        return new UserSkel();
+    }
     
     test()
     {
@@ -95,4 +108,3 @@ class User extends List
         return "Fuck have access"
     }
 }
-module.exports=User
