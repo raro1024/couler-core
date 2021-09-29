@@ -61,7 +61,7 @@ export async function read(module, key) {
 
 }
 //get a list of data 
-async function list(module, limit = 99) {
+export async function list(module, limit = 99) {
     console.log("list data")
     var client = await connectToDB();
     var db = client.db();

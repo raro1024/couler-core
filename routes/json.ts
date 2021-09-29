@@ -9,7 +9,7 @@ export const router = express.Router();
  */
 router.use(express.urlencoded({extended: true}))
 router.use(express.json())
-router.all('/json/:module/:handler/*', (req, res)=>{
+router.all(['/json/:module/:handler/*','/json/:module/:handler','/json/:module/'], (req, res)=>{
     //Load Module
     var params=getParams(req);
     var module_;
@@ -21,14 +21,21 @@ router.all('/json/:module/:handler/*', (req, res)=>{
          module_= require("../modules/"+req.params.module);
     }
     const m_=new module_();
-    const handler=m_[req.params.handler];
-    if (handler===undefined)
+
+    var  handlername:string=req.params.handle;
+    var handler=m_[handlername];
+    
+
+    if (handler===undefined || handlername== undefined) // hander is not set try defaul list handler
     {
-        res.end("404 Handler not Found")
-        return;
+        handlername="list";
+        handler=m_[handlername]
+       
+        if (handler===undefined)
+        {
+            throw "No list"
+        }
     }
-    console.log("show constructor")
-    console.log()
     if(!decerators.isExposed(m_,handler.name))//Check if Function is Exposed if not break;
     {
         throw "404";
@@ -36,7 +43,7 @@ router.all('/json/:module/:handler/*', (req, res)=>{
     switch(handler.constructor.name)
     {   
         case "AsyncFunction":
-                m_[req.params.handler](params).then((data)=>{
+                m_[handlername](params).then((data)=>{
                 if(typeof data==="object")
                 {
                     res.json(data)

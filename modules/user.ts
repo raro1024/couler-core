@@ -73,33 +73,7 @@ class User extends List
         return "login - "+ k;
         
     }
-    /**
-     * 
-     * @param {string} key 
-     *
-     * @returns {object} Object of user
-     * Function must clear Password out of the object 
-     */
-    @exposed
-    async view({key})
-    {
-
-        var userpromise;
-        if (key==="self")
-        {
-            userpromise=  utils.getCurrentUser().then(data=>data);
-        }
-        else
-        {
-            userpromise = db.read(this.classname(),key);
-        }
-        userpromise.then(user=>{
-            delete user["password"];
-        }).catch((err)=>{return err});
-        
-        return userpromise;
-       
-    }
+   
     @exposed
     async add(data)
     {   
