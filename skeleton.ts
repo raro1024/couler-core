@@ -21,17 +21,25 @@ export class Skeleton
     /**
      * 
      * @param {object} requestdata This value is an object that contains all data for the Bones
+     * @param {boolean} fromClient If true the fale is not new set (Password)
      * 
      * Only if the bone exist the Data will be write in the Database
      * 
      */
-    writeBones(requestdata)
+    writeBones(requestdata,fromClient=false)
     {
         console.log("Fill bones with Data from DB or reqes")
         for (const [bonename, bone] of Object.entries(this)) {
             if(typeof bone==="object")
-            {  
-                bone.data=requestdata[bonename];
+            {   if(fromClient)
+                {
+                    bone.data=requestdata[bonename];
+                }
+                else
+                {
+                    bone.rawdata=requestdata[bonename];
+                }
+                
             }
         }
     }

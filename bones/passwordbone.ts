@@ -11,6 +11,9 @@ export class passswordBone extends Bone {
     get data() {
         return this._value;
     }
+    /**
+     * Problem : If I read the Value form the Database the Function thinks it's comes form Client
+     */
     set data(_val) {
         
         if (_val == undefined) {
@@ -22,17 +25,17 @@ export class passswordBone extends Bone {
         }
 
     }
+    /**
+     * When the Value comes form the Database the password shoud not new set
+     */
+    set rawdata(_val) {
+        
+        this._value=_val;
+    }
     check(_val) // Not so save :()
     {
-        console.log("check pw");
-        console.log(_val);
-        console.log(this._value);
-
-        var salt=this._value.split("$")[0];
-        console.log(salt);
-        console.log(this._value==crypto.createHash('sha256').update(salt+_val).digest('base64'));
-        var salt=this._value.split("$")[0];
-        return this._value==crypto.createHash('sha256').update(salt+_val).digest('base64')
+        var [salt,password]=this._value.split("$");
+        return password==crypto.createHash('sha256').update(salt+_val).digest('base64')
 
     }
 

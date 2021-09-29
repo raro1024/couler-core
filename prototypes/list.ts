@@ -13,16 +13,16 @@ export class List {
         return _class.constructor.name.toLowerCase();
     }
     /**
-     * @param {object} module is an Instance for a skel to Provie bone Logic
+     * @param {object} skel is an Instance for a skel to Provie bone Logic
      * @param {object} data All data that can write the Database 
      * @returns 
      */
-    async add(module, data) {
+    async add(skel, data) {
         if (!utils.isPostRequest()) {
             return "Add Request only over POST";
         }
-        module.writeBones(data)
-        module.toDB();
+        skel.writeBones(data,true);
+        skel.toDB();
 
 
         return "ok"

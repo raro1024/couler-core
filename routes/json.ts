@@ -2,6 +2,7 @@ import * as express from "express";
 import * as decerators from "../decerators";
 import * as coremodules from "../modules/init";
 import * as modules from "../../modules/init"; //Err if not exist but its ok :D
+import {Error} from "../errors";
 
 export const router = express.Router();
 
@@ -45,13 +46,23 @@ router.all(['/json/:module/:handler/*', '/json/:module/:handler', '/json/:module
                     res.json(data)
                     res.end()
                 } else {
-                    res.end(data)
+                    res.end(data.toString())
                 }
 
-            })
+            }).catch((error)=>{
+                if(typeof error=="function")
+                {
+                    var errorData=error()
+                    res.status(errorData[0])
+                    res.end(errorData[1])
+                }
+                else{
+                    res.end(error.toString());
+                }
+            });
             break
         case "Function":
-            res.end(m_[req.params.handler](params))
+            res.end(m_[req.params.handler](params).toString())
             break
 
     }

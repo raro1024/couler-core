@@ -4,6 +4,7 @@ import { List } from "../prototypes/list";
 import {db} from "../db";
 import {utils} from "../utils";
 import {exposed} from "../decerators";
+import {Error} from "../errors";
 import { stringBone } from "../bones/stringbone";
 import { passswordBone } from "../bones/passwordbone";
 
@@ -48,23 +49,6 @@ export class User extends List
         }
         return this
     }
-    /**
-     * Fill Skeleton with data
-     * @param {string} key
-     * @returns 
-     */
-    @exposed
-    async fromDB({key})
-    {
-        var vals =db.read("user",key)
-        return vals.then((data)=>{
-            for (const [key, value] of Object.entries(data)) {
-                this[key]=value
-            }
-            
-        });
-        
-    }
     @exposed
     async login(data)
     {
@@ -76,9 +60,10 @@ export class User extends List
         console.log(data)
         console.log(data["name"])
         var skel = this.loginSkel();
-        await db.read("user",{"name":data["name"]}).then(userdata=>{skel.writeBones(userdata)});
-        //skel.password.check(data["password"])
-        console.log(skel.password.check(data["password"]))
+        await db.read("user",{"name":data["name"]}).then(userdata=>{skel.writeBones(userdata)}).catch(()=>{
+            console.log("has not")
+            throw new Error().notFound;
+        });
         return skel.password.check(data["password"]);
         
     }
@@ -88,11 +73,10 @@ export class User extends List
     {   
         console.log("add")
         console.log(data)
-        
         return super.add(this.addSkel(),data);
     }
-    //Create an Instace off the Userskel
 
+    //Create an Instace off the Userskel
     addSkel()
     {
         return new UserSkel();
