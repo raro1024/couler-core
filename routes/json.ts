@@ -4,6 +4,7 @@ import * as coremodules from "../modules/init";
 import * as modules from "../../modules/init"; //Err if not exist but its ok :D
 import {Error} from "../errors";
 
+
 export const router = express.Router();
 
 /**
@@ -18,8 +19,7 @@ router.use(express.json())
 router.all(['/json/:module/:handler/*', '/json/:module/:handler', '/json/:module/'], (req, res) => {
     //Load Module
     var params = getParams(req);
-    var module_ = getModule(req);
-    console.log(module_)
+    var module_:any = getModule(req);
     const m_ = new module_();
 
     var handlername: string = req.params.handler;
@@ -50,14 +50,20 @@ router.all(['/json/:module/:handler/*', '/json/:module/:handler', '/json/:module
                 }
 
             }).catch((error)=>{
-                if(typeof error=="function")
+                switch (typeof error)
                 {
-                    var errorData=error()
-                    res.status(errorData[0])
-                    res.end(errorData[1])
-                }
-                else{
-                    res.end(error.toString());
+                    case "function": // Errors Function
+                        var errorData=error()
+                        res.status(errorData[0])
+                        res.end(errorData[1])
+                        break;
+                    case "object": //JSON Err msg
+                        res.json(error)
+                        res.end()
+                        break;
+                    default:
+                        res.end(error.toString());
+                    break
                 }
             });
             break
@@ -100,6 +106,7 @@ function getModule(req) {
 
     }
     throw "Module Not Found"
+    
 
 
 }

@@ -19,12 +19,11 @@ export class List {
      */
     async add(skel, data) {
         if (!utils.isPostRequest()) {
-            return "Add Request only over POST";
+            throw "Add Request only over POST";
         }
-        skel.writeBones(data,true);
+
+        await skel.writeBones(data,true);
         skel.toDB();
-
-
         return "ok"
 
     }

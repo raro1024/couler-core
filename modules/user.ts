@@ -18,7 +18,7 @@ class UserSkel extends Skeleton {
    
     constructor() {
         super();
-        this.name = new stringBone({required:true});
+        this.name = new stringBone({required:true,unique:true});
         this.password = new passswordBone();
         this.rand = new stringBone({defaultValue:"defaulttest"})
     }
@@ -61,7 +61,6 @@ export class User extends List
         console.log(data["name"])
         var skel = this.loginSkel();
         await db.read("user",{"name":data["name"]}).then(userdata=>{skel.writeBones(userdata)}).catch(()=>{
-            console.log("has not")
             throw new Error().notFound;
         });
         return skel.password.check(data["password"]);

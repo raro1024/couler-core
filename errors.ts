@@ -4,18 +4,9 @@
 export class Error
 {
     value:any;
-    constructor()
-    {
-        this.value;
-    }
-    read()
-    {
-        return this.value;
-    }
-    json(data)
+    constructor(data={})
     {
         this.value=data;
-        
     }
     notFound()
     {

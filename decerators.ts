@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-
 const metadataKey = 'exposed';
 
 export function exposed(target, propertyKey) {
