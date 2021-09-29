@@ -2,8 +2,8 @@
  * Standart module where other can extends from
  */
 const utils = require('../utils.js');
-const db = require('../db.js');
-class List
+
+export class List
 {
     constructor()
     {
@@ -28,4 +28,3 @@ class List
 
     }
 }
-module.exports=List

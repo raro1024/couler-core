@@ -1,7 +1,14 @@
 {
     "compilerOptions": {
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "target": "esnext",
+        "module": "commonjs",
         "watch": true
     },
+    "type": "module",
+    "ts-node": {},
+    "lib": ["es6"],
+    "module": "commonjs",
    
 }

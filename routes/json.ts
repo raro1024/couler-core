@@ -1,8 +1,7 @@
-const express = require('express');
-const router = express.Router();
+import * as express from "express";
+import * as decerators from "../decerators";
+export const router = express.Router();
 
-const db = require('../db.js');
-const utils = require("../utils.js");
 /**
  * Load Instance of a Module the call the handler
  * If the Handler is Async the data will send when the Promies is fullfiled
@@ -28,8 +27,14 @@ router.all('/json/:module/:handler/*', (req, res)=>{
         res.end("404 Handler not Found")
         return;
     }
-    switch(handler.constructor.name)
+    console.log("show constructor")
+    console.log()
+    if(!decerators.isExposed(m_,handler.name))//Check if Function is Exposed if not break;
     {
+        throw "404";
+    }
+    switch(handler.constructor.name)
+    {   
         case "AsyncFunction":
                 m_[req.params.handler](params).then((data)=>{
                 if(typeof data==="object")
@@ -66,7 +71,4 @@ function getParams(req)
     }
 }
 
-
-
-
-module.exports = router;
+export * as json from "./json";

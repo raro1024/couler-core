@@ -1,8 +1,12 @@
 const stringBone = require('../bones/stringbone.js');
-const db = require('../db.js');
-const utils = require('../utils.js');
+
+
 const Skeleton = require('../skeleton.js');
-const List = require('./list.js');
+
+import { List } from "./list";
+import {db} from "../db";
+import {utils} from "../utils";
+import {exposed} from "../decerators";
 
 
 
@@ -47,9 +51,10 @@ class User extends List
      * @param {string} key
      * @returns 
      */
+     @exposed
     async fromDB({key})
     {
-        var vals =db.fromDB("user",key)
+        var vals =db.read("user",key)
         return vals.then((data)=>{
             for (const [key, value] of Object.entries(data)) {
                 this[key]=value
@@ -58,13 +63,13 @@ class User extends List
         });
         
     }
+    @exposed
     async login({data})
     {
 
         console.log("user login")
         var k =utils.getSessionKey();
-        console.log(k);
-        utils.setUserSession("6147824759f79e71d01ffc27",k)
+        utils.setUserSession("6147824759f79e71d01ffc27")
         return "login - "+ k;
         
     }
@@ -75,17 +80,18 @@ class User extends List
      * @returns {object} Object of user
      * Function must clear Password out of the object 
      */
+    @exposed
     async view({key})
     {
-        console.log("params are")
-        console.log(key)
+
+        var userpromise;
         if (key==="self")
         {
-            var userpromise =  utils.getCurrentUser().then(data=>data);
+            userpromise=  utils.getCurrentUser().then(data=>data);
         }
         else
         {
-            var userpromise = db.read(this.classname(),key);
+            userpromise = db.read(this.classname(),key);
         }
         userpromise.then(user=>{
             delete user["password"];
@@ -94,7 +100,7 @@ class User extends List
         return userpromise;
        
     }
-
+    @exposed
     async add(data)
     {   
         console.log("add")
@@ -103,9 +109,16 @@ class User extends List
         return super.add(this.addSkel(),data);
     }
     //Create an Instace off the Userskel
+
     addSkel()
     {
         return new UserSkel();
+    }
+    
+    test()
+    {
+        console.log("Fuck in")
+        return "Fuck have access"
     }
 }
 module.exports=User

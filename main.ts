@@ -1,12 +1,14 @@
 /**
  * Starts the main Server 
  */
-var express = require('express');
+import * as express from "express";
 var session = require('express-session');
 var app = express();
 app.use(session({ secret: "-", cookie: { maxAge: 60*60*1000 }}));
-const jsonhandler =  require('./routes/json.js');
-const htmlhandler =  require('./routes/html.js');
+import * as jsonhandler from "./routes/json";
+import * as htmlhandler from "./routes/html";
+
+
 var request;
 var userid = "6147824759f79e71d01ffc27";
 
@@ -19,9 +21,9 @@ app.all("*",function(req, res,next)
 });
 
 //Standart json handler
-app.use(jsonhandler);
+app.use(jsonhandler.router);
 //Standart html handler
-app.use(htmlhandler);
+app.use(htmlhandler.router);
 
 
 // Access the session as req.session

@@ -1,7 +1,11 @@
 /**
  * Basic Bone
  */
-class Bone {
+export class Bone {
+    _value: any;
+    multiple: boolean;
+    defaultValue: any;
+    required: boolean;
     /**
      * 
      * @param {boolean} multiple
@@ -9,13 +13,11 @@ class Bone {
      * 
      * 
      */
-    constructor({
-        multiple = false,
-        defaultValue
-    } = {}) {
-        this._value;
+    constructor(multiple = false, defaultValue: null, required = false) {
+        this._value = null;
         this.multiple = multiple;
         this.defaultValue = defaultValue;
+        this.required = required;
         //this.default=default;
 
     }
@@ -27,37 +29,15 @@ class Bone {
     get data() {
         return this._value;
     }
-    set data(_val,append=false) {
+    set data(_val) {
+        
         if (_val == undefined) {
             this._value = this.defaultValue;
         } else {
-            if (Array.isArray(_val)) {
-                if (this.multiple) {
-                    this._value = _val;
-                } else {
-                    throw "Error not multiple"
-                }
-
-            } else {
-                if (this.multiple) {
-                    if(append)
-                    {
-                        
-                    }
-                    else
-                    {
-                        this._value = [_val];
-                    }
-                    
-                } else {
-                    this._value = this._val;
-                }
-            }
-
+            this._value=_val;
 
         }
 
     }
 
 }
-module.exports = Bone;

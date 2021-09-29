@@ -4,9 +4,9 @@
  */
 
 
-const db = require('./db.js');
+ import {db} from "./db";
 
-function getSessionKey()
+ export function getSessionKey()
 {
     const getRequestData =require("./main");
     var ssid = getRequestData().sessionID;
@@ -17,7 +17,7 @@ function getSessionKey()
  * Function to get the current user
  * @returns Promies
  */
-function getCurrentUser()
+export function getCurrentUser()
 {
     const sessionpromise= db.read("sessions",{"sessionID": getSessionKey()});
     const userpromise= new Promise((resolve, reject)=>{
@@ -35,7 +35,7 @@ function getCurrentUser()
    
 }
 
-function setUserSession(userkey)
+export function setUserSession(userkey)
 {
    
     const getRequestData =require("./main");
@@ -43,16 +43,10 @@ function setUserSession(userkey)
     db.toDB("sessions",{"sessionID":sessionID,"userkey":userkey});
 }
 
-function isPostRequest()
+export function isPostRequest()
 {
     const getRequestData =require("./main");
     console.log(getRequestData()["method"])
     return getRequestData()["method"]==="POST"
 }
-module.exports=
-{
-    getCurrentUser,
-    setUserSession,
-    getSessionKey,
-    isPostRequest,
-};
+export * as utils from "./utils";

@@ -1,9 +1,15 @@
-const express = require('express');
-const router = express.Router();
+import * as express from "express";
+export const router = express.Router();
 
-const db = require('../db.js');
-const utils = require("../utils.js");
-router.get('/*', (req, res)=>{
-res.end("html");
+/**
+ * Load Instance of a Module the call the handler
+ * If the Handler is Async the data will send when the Promies is fullfiled
+ * First the Folder with normal modules will check
+ */
+
+router.all('/*', (req, res)=>{
+    res.send("html");
 });
-module.exports = router;
+
+
+export * as html from "./html";
