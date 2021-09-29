@@ -1,15 +1,19 @@
 const stringBone = require('../bones/stringbone.js');
 const db = require('../db.js');
 const utils = require('../utils.js');
+const Skeleton = require('../skeleton.js');
 const List = require('./list.js');
 
 
 
-class UserSkel {
+class UserSkel extends Skeleton {
+    kindname="user" //For Routing and DB Shit
     constructor() {
+        super();
         this.key = new stringBone(); //Set every time to find an User
         this.username = new stringBone();
         this.password = new stringBone();
+        this.rand = new stringBone({default:"defaulttest"})
     }
 
 }
@@ -91,9 +95,17 @@ class User extends List
        
     }
 
-    async add({data})
+    async add(data)
+    {   
+        console.log("add")
+        console.log(data)
+        
+        return super.add(this.addSkel(),data);
+    }
+    //Create an Instace off the Userskel
+    addSkel()
     {
-        return super.add(this.classname(),data);
+        return new UserSkel();
     }
 }
 module.exports=User

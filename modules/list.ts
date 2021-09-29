@@ -1,7 +1,8 @@
 /**
  * Standart module where other can extends from
  */
- const utils = require('../utils.js');
+const utils = require('../utils.js');
+const db = require('../db.js');
 class List
 {
     constructor()
@@ -9,7 +10,7 @@ class List
 
     }
     /**
-     * 
+     * @param {object} module is an Instance for a skel to Provie bone Logic
      * @param {object} data All data that can write the Database 
      * @returns 
      */
@@ -19,9 +20,11 @@ class List
         {
             return "Add Request only over POST";
         }
-        console.log(module)
-        console.log(data)
-        return("ok")
+        module.writeBones(data)
+        module.toDB();
+
+        
+        return "ok"
 
     }
 }

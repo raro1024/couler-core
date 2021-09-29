@@ -13,7 +13,7 @@ var userid = "6147824759f79e71d01ffc27";
 let port = 8080;
 app.all("*",function(req, res,next) 
 {
-    console.log("Set user id 1")
+    console.log("Set user id")
     request=req;
     next();
 });

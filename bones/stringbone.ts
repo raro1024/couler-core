@@ -1,9 +1,8 @@
 const Bone = require('./bone.js');
 
 class stringBone extends Bone {
-    constructor() {
-        super();
-       
+    constructor(params={}) {
+        super(params);
     }
 
 

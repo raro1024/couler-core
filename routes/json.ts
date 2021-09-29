@@ -8,13 +8,11 @@ const utils = require("../utils.js");
  * If the Handler is Async the data will send when the Promies is fullfiled
  * First the Folder with normal modules will check
  */
- router.use(express.urlencoded({extended: true}))
- router.use(express.json())
+router.use(express.urlencoded({extended: true}))
+router.use(express.json())
 router.all('/json/:module/:handler/*', (req, res)=>{
     //Load Module
     var params=getParams(req);
-    
-    console.log(params)
     var module_;
     try{
         module_=require("../../modules/"+req.params.module);

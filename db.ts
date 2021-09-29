@@ -28,6 +28,7 @@ async connectToDB(_url=undefined,accesssDB=true)
 }
 
 async toDB(module,data) {
+
     var client = await this.connectToDB();
     var db=client.db();
     db.collection(module).insertOne(data, function(err, res) {
