@@ -2,9 +2,12 @@ import * as express from "express";
 import * as decerators from "../decerators";
 import * as coremodules from "../modules/init";
 import * as modules from "../../modules/init"; //Err if not exist but its ok :D
-import {Error} from "../errors";
+import {
+    Error
+} from "../errors";
+import { nextTick } from "process";
 
-
+export const name="json" //name of The renderer
 export const router = express.Router();
 
 /**
@@ -16,10 +19,14 @@ router.use(express.urlencoded({
     extended: true
 }))
 router.use(express.json())
-router.all(['/json/:module/:handler/*', '/json/:module/:handler', '/json/:module/'], (req, res) => {
+router.use((req,res,next)=>{
+    req["handlername"]="json"; // Set the handler Namer
+    next();
+})
+router.all(['/json/:module/:handler/*', '/json/:module/:handler', '/json/:module/',"/json*"], (req, res) => {
     //Load Module
     var params = getParams(req);
-    var module_:any = getModule(req);
+    var module_: any = getModule(req);
     const m_ = new module_();
 
     var handlername: string = req.params.handler;
@@ -49,25 +56,18 @@ router.all(['/json/:module/:handler/*', '/json/:module/:handler', '/json/:module
                     res.end(data.toString())
                 }
 
-            }).catch((error)=>{
-                switch (typeof error)
-                {
-                    case "function": // Errors Function
-                        var errorData=error()
-                        res.status(errorData[0])
-                        res.end(errorData[1])
-                        break;
-                    case "object": //JSON Err msg
-                        res.json(error)
-                        res.end()
-                        break;
-                    default:
-                        res.end(error.toString());
-                    break
-                }
+            }).catch((error) => {
+                handleError(res, error)
+
             });
             break
         case "Function":
+            try {
+                res.json( m_[handlername](params))
+                res.end()
+            } catch (error) {
+                handleError(res, error)
+            }
             res.end(m_[req.params.handler](params).toString())
             break
 
@@ -89,25 +89,51 @@ function getParams(req) {
 
 function getModule(req) {
 
-    if (req.params.module === undefined) {
-        console.log(req.params.module)
-        throw "Module Not Found"
+    var requestmodule: string;
+    console.log("req.params.module")
+    console.log(req.params.module)
+    if (req.params.module === undefined||"") {
+        console.log("set index");
+        
+        requestmodule = "index";
+    } else {
+        requestmodule = req.params.module.toLocaleLowerCase();
     }
     for (const [modulename, module_] of Object.entries(modules)) {
-        if (req.params.module.toLocaleLowerCase() === modulename.toLocaleLowerCase()) {
+        if (requestmodule === modulename.toLocaleLowerCase()) {
             return module_
         }
     }
 
     for (const [modulename, module_] of Object.entries(coremodules)) {
-        if (req.params.module.toLocaleLowerCase() === modulename.toLocaleLowerCase()) {
+        if (requestmodule === modulename.toLocaleLowerCase()) {
+            console.log(module_)
             return module_
         }
 
     }
     throw "Module Not Found"
-    
 
+}
 
+function handleError(res, error) {
+    switch (typeof error) {
+        case "function": // Errors Function
+            var errorData = error()
+            res.status(errorData[0])
+            res.end(errorData[1])
+            break;
+        case "object": //JSON Err msg
+            res.json(error)
+            res.end()
+            break;
+        default:
+            res.end(error.toString());
+            break
+    }
+}
+export async function render(data={})
+{
+    return data;
 }
 export * as json from "./json";

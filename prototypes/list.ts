@@ -4,8 +4,10 @@
 import {utils} from "../utils";
 import {exposed} from "../decerators";
 import {db} from "../db";
+import {json} from "../routes/json";
 
 export class List {
+    kindname:any;
     constructor() {
 
     }
@@ -36,7 +38,7 @@ export class List {
      */
     @exposed
     async view(key) {
-
+        utils.getCurrentRender();
         var userpromise;
         if (key === "self") {
             userpromise = utils.getCurrentUser().then(data => data);
@@ -56,7 +58,25 @@ export class List {
      */
      @exposed
      async list() {
-        console.log("list ")
+        
          return  db.list(this.classname());
+     }
+     /**
+      * 
+      * @param data 
+      * @param template If html the Site to render
+      */
+     returnData(data,template)
+     {
+        let renderer =utils.getCurrentRender();
+        switch (utils.getCurrentRenderName())
+        {
+            case "json":
+                renderer.render(data)
+            case "html":
+                renderer.render(template,data)
+            default :
+                json.render(data)
+        }
      }
 }

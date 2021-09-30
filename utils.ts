@@ -5,6 +5,8 @@
 
 
  import {db} from "./db";
+import { html } from "./routes/html";
+import { json } from "./routes/json";
 
  export function getSessionKey()
 {
@@ -58,5 +60,19 @@ export function randomString(length:number=10) // THX https://stackoverflow.com/
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
    return result;
+}
+/**
+ * 
+ * @returns The current renderer
+ */
+export function getCurrentRender()
+{
+    var handlerDict={"json":json,"html":html}
+    return handlerDict[getCurrentRenderName()];
+}
+export function getCurrentRenderName()
+{
+    const getRequestData =require("./main");
+    return getRequestData().handlername;
 }
 export * as utils from "./utils";
