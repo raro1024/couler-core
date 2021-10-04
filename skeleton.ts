@@ -16,7 +16,7 @@ import {
  */
 
 export class Skeleton {
-    kindname: string = "user";
+    kindname: string;
     key: stringBone;
     createdate: dateBone;
     changedate: dateBone;

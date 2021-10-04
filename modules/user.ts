@@ -75,7 +75,7 @@ export class User extends List
         return super.add(this.addSkel(),data);
     }
 
-    //Create an Instace off the Userskel
+    //Create an Instace off the Skel
     addSkel()
     {
         return new UserSkel();
