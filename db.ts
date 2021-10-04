@@ -1,3 +1,6 @@
+import { Error } from "./errors";
+import { utils } from "./utils";
+
 /**
  * this Class handel all db write and read stuff with mongodb 
  * Standart db is main
@@ -32,19 +35,23 @@ export async function toDB(module, data) {
 
 }
 
-export async function read(module, key) {
+export async function get(module, key) {
 
 
     var client = await connectToDB();
     var db = client.db();
     var dataPromies = new Promise((resolve, reject) => {
-        console.log(typeof key)
+
         if (typeof key === "string") {
             key = {
                 "_id": ObjectId(key)
             }
         }
-        console.log(key);
+        if(utils.isEmpty(key))
+        {
+            console.log("KEY ERR")
+            throw new Error({"msg":"Key was empty"});
+        }
         db.collection(module).findOne(key, function (err, res) {
             if (err) throw err;
             client.close();

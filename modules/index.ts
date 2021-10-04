@@ -4,7 +4,7 @@ import {
 import {
     exposed
 } from "../decerators";
-import { List } from "../prototypes/list";
+import { Singel } from "../prototypes/singel";
 import {
     html
 } from "../routes/html";
@@ -17,22 +17,15 @@ import {
 
 
 
-
 /**
  * If "/*" Called
  */
-export class Index extends List{
+export class Index extends Singel{
     kindname = "index"
     
     constructor() {
         super();
     }
-    @exposed
-    async list() {
-        var data = await db.list(this.kindname).then(d=>d);
-        return this.
-        
-
-    }
+   
 
 }

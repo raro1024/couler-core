@@ -21,11 +21,11 @@ import { json } from "./routes/json";
  */
 export function getCurrentUser()
 {
-    const sessionpromise= db.read("sessions",{"sessionID": getSessionKey()});
+    const sessionpromise= db.get("sessions",{"sessionID": getSessionKey()});
     const userpromise= new Promise((resolve, reject)=>{
         sessionpromise.then((data)=>{
             console.log("has session")
-            db.read("user",data["userkey"]).then((data)=>{
+            db.get("user",data["userkey"]).then((data)=>{
             resolve(data);
             })
     }).catch(err=>{
@@ -74,5 +74,9 @@ export function getCurrentRenderName()
 {
     const getRequestData =require("./main");
     return getRequestData().handlername;
+}
+export function isEmpty(obj)
+{
+    return Object.keys(obj).length === 0;
 }
 export * as utils from "./utils";

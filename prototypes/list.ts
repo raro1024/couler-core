@@ -3,11 +3,12 @@
  */
 import {utils} from "../utils";
 import {exposed} from "../decerators";
-import {db} from "../db";
+import {db, list} from "../db";
 import {json} from "../routes/json";
 
 export class List {
     kindname:any;
+    listTemplate:string="list.ejs"
     constructor() {
 
     }
@@ -43,40 +44,38 @@ export class List {
         if (key === "self") {
             userpromise = utils.getCurrentUser().then(data => data);
         } else {
-            userpromise = db.read(this.classname(), key);
+            userpromise = db.get(this.classname(), key);
         }
 
         return userpromise;
 
     }
     /**
-     * 
-     * 
      *
      * @returns {object} Object of user
      * Function must clear Password out of the object 
      */
      @exposed
      async list() {
-        
-         return  db.list(this.classname());
+        return  this.render(await db.list(this.classname()));
      }
      /**
       * 
       * @param data 
       * @param template If html the Site to render
       */
-     returnData(data,template)
+     render(data,template=this.listTemplate)
      {
+       
         let renderer =utils.getCurrentRender();
         switch (utils.getCurrentRenderName())
         {
             case "json":
-                renderer.render(data)
+                return renderer.render(data)
             case "html":
-                renderer.render(template,data)
+                return renderer.render(template,data)
             default :
-                json.render(data)
+                return json.render(data)
         }
      }
 }

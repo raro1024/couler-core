@@ -7,13 +7,13 @@ import {
 } from "../errors";
 import * as ejs from 'ejs'; // For the templates
 import * as path from 'path';
-export const name="html" //name of The renderer
+export const name = "html" //name of The renderer
 export const router = express.Router();
 router.use(express.urlencoded({
     extended: true
 }))
-router.use((req,res,next)=>{
-    req["handlername"]="html"; // Set the handler Namer
+router.use((req, res, next) => {
+    req["handlername"] = "html"; // Set the handler Namer
     next();
 })
 /**
@@ -31,16 +31,28 @@ router.all(['/:module/:handler/*', '/:module/:handler', '/:module/', "*"], (req,
     var handlername: string = req.params.handler;
     var handler = m_[handlername];
 
+    if (Object.getPrototypeOf(m_.constructor).name.toLocaleLowerCase() == "list") { // Check if Parent class is list
+        if (handler === undefined || handlername == undefined) // hander is not set try defaul list handler
+        {
+            handlername = "list";
+            handler = m_[handlername]
 
-    if (handler === undefined || handlername == undefined) // hander is not set try defaul list handler
-    {
-        handlername = "list";
-        handler = m_[handlername]
-
-        if (handler === undefined) {
-            throw "No list"
+            if (handler === undefined) {
+                throw "No list"
+            }
         }
     }
+    if (Object.getPrototypeOf(m_.constructor).name.toLocaleLowerCase() == "singel")
+    {
+        if (handler === undefined || handlername == undefined) // hander is not set try defaul list handler
+        {
+            handlername = "view";
+            handler = m_[handlername]
+            if (handler === undefined) {
+                throw "No view"
+            }
+        } 
+    } 
     if (!decerators.isExposed(m_, handler.name)) //Check if Function is Exposed if not break;
     {
         throw "No exposed";
@@ -48,19 +60,19 @@ router.all(['/:module/:handler/*', '/:module/:handler', '/:module/', "*"], (req,
     switch (handler.constructor.name) {
         case "AsyncFunction":
             m_[handlername](params).then((data) => {
-                res.end(data.toString())
+                res.end(data.toString());
 
             }).catch((error) => {
-                handleError(res, error)
+                handleError(res, error);
 
             });
             break
         case "Function":
             try {
-                res.end( m_[handlername](params).toString())
+                res.end(m_[handlername](params).toString())
 
             } catch (error) {
-                handleError(res, error)
+                handleError(res, error);
             }
             res.end(m_[req.params.handler](params).toString())
             break
@@ -84,8 +96,8 @@ function getParams(req) {
 function getModule(req) {
 
     var requestmodule: string;
-    if (req.params.module === undefined||"") {
-        
+    if (req.params.module === undefined || "") {
+
         requestmodule = "index";
     } else {
         requestmodule = req.params.module.toLocaleLowerCase();
@@ -124,22 +136,20 @@ function handleError(res, error) {
     }
 }
 
-export async function render(filename,data={})
-{
+export async function render(filename, data = {}) {
     return await new Promise((resolve, reject) => {
-        ejs.renderFile(path.join(__dirname, '../views/'+filename), {}, function(err, str){
-            if (err)
-            {
+        ejs.renderFile(path.join(__dirname, '../views/' + filename), {
+            data: data
+        }, function (err, str) {
+            if (err) {
                 reject(err)
-            }
-            else
-            {
+            } else {
 
                 resolve(str);
             }
-           
+
         })
-        }).then((data)=>data);
+    }).then((data) => data);
 }
 
 export * as html from "./html";

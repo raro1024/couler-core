@@ -60,7 +60,7 @@ export class User extends List
         console.log(data)
         console.log(data["name"])
         var skel = this.loginSkel();
-        await db.read("user",{"name":data["name"]}).then(userdata=>{skel.writeBones(userdata)}).catch(()=>{
+        await db.get("user",{"name":data["name"]}).then(userdata=>{skel.writeBones(userdata)}).catch(()=>{
             throw new Error().notFound;
         });
         return skel.password.check(data["password"]);

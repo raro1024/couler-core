@@ -47,37 +47,49 @@ export class Skeleton {
                         var query = {};
                         query[bonename] = requestdata[bonename]
                         await new Promise((resolve, reject) => {
-                            db.read(this.kindname, query).then(() => {
+                            db.get(this.kindname, query).then(() => {
                                 reject();
                             })
                         }).catch(() => {
-                                throw {"msg": "User exist"}
-                            }); 
+                            throw {
+                                "msg": "User exist"
+                            }
+                        });
 
-                        }
-                        bone.data = requestdata[bonename];
-                    } else {
-                        bone.rawdata = requestdata[bonename];
                     }
-
+                    bone.data = requestdata[bonename];
+                } else {
+                    bone.rawdata = requestdata[bonename];
                 }
+
             }
-        }
-        readBones() {
-            var bonevals = {}
-            for (const [bonename, bone] of Object.entries(this)) {
-                if (typeof bone === "object") {
-                    bonevals[bonename] = this[bonename].data;
-                }
-            }
-
-            return bonevals
-        }
-        toDB() {
-            db.toDB(this.kindname, this.readBones());
-        }
-
-        async fromDB(key) {
-
         }
     }
+    readBones() {
+        var bonevals = {}
+        for (const [bonename, bone] of Object.entries(this)) {
+            if (typeof bone === "object") {
+                bonevals[bonename] = this[bonename].data;
+            }
+        }
+
+        return bonevals
+    }
+    /**
+     * 
+     * @param boneName Name of the Bone 
+     * @param value 
+     */
+    setBoneValue(boneName:string,value:any)
+    {
+        return this[boneName].data=value;
+    }
+
+    toDB() {
+        db.toDB(this.kindname, this.readBones());
+    }
+
+    async fromDB(key) {
+
+    }
+}
