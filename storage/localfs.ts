@@ -15,7 +15,7 @@ export const  storage=   multer.diskStorage({
 
     res.writeHead(200, {
         "Content-Type": filedata["mimetype"],
-        "Content-Disposition": "attachment; filename=" + filedata["filename"]
+        "Content-Disposition": "attachment; filename=" + filedata["filename"]+"."+filedata["mimetype"].split("/")[1]
     });
     fs.createReadStream(path.join(__dirname,"/../",  filedata["path"])).pipe(res);
 

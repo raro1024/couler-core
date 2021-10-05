@@ -137,6 +137,7 @@ function handleError(res, error) {
 }
 
 export async function render(filename, data = {}) {
+
     return await new Promise((resolve, reject) => {
         ejs.renderFile(path.join(__dirname, '../views/' + filename), {
             data: data
@@ -144,7 +145,6 @@ export async function render(filename, data = {}) {
             if (err) {
                 reject(err)
             } else {
-
                 resolve(str);
             }
 

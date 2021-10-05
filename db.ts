@@ -31,10 +31,19 @@ export async  function connectToDB(_url = undefined, dbName = "main") {
 export async function put(module, data) {
     var client = await connectToDB();
     var db = client.db();
-    db.collection(module).insertOne(data, function (err, res) {
-        if (err) throw err;
-        client.close();
+    var keyPromies = new Promise((resolve, reject) => {
+        db.collection(module).insertOne(data, function (err, res) {
+            if (err)
+            {
+                reject();
+            }
+            client.close();
+            resolve(res["insertedId"]);
+            
+            
+        });
     });
+    return keyPromies
 
 }
 
@@ -53,21 +62,12 @@ export async function get(module, key={}, limit = 100) {
         }
         if (utils.isEmpty(key)) {
             console.log("KEY ERR")
-            throw new Error({
-                "msg": "Key was empty"
-            });
         }
         db.collection(module).find(key).limit(limit).toArray(function (err, res) {
             if (err) throw err;
             client.close();
             if (res != null) {
-                if(res.length==1)
-                {
-                    resolve(res[0]);
-                }
-                else{
-                    resolve(res);
-                }
+                resolve(res);
                
             } else {
                 reject();

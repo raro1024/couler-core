@@ -42,7 +42,6 @@ import { stringBone } from "../bones/stringbone";
       */
      @exposed
      async view(key) {
-         utils.getCurrentRender();
          var userpromise;
          if (key === "self") {
              userpromise = utils.getCurrentUser().then(data => data);

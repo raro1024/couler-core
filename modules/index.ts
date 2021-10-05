@@ -1,3 +1,4 @@
+import { conf } from "../conf";
 import {
     db
 } from "../db";
@@ -14,9 +15,6 @@ import {
 } from "../utils";
 
 
-
-
-
 /**
  * If "/*" Called
  */
@@ -26,6 +24,10 @@ export class Index extends Singel{
     constructor() {
         super();
     }
-   
+    @exposed
+    async view(key=undefined)
+    {
+        return super.view(key)
+    }
 
 }

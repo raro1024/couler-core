@@ -17,11 +17,9 @@ import {
 
 export class Skeleton {
     kindname: string;
-    key: stringBone;
     createdate: dateBone;
     changedate: dateBone;
     constructor() {
-        this.key = new stringBone(); //Set every time to find an Object
         this.createdate = new dateBone({
             defaultValue: Date.now()
         });
@@ -86,7 +84,7 @@ export class Skeleton {
     }
 
     toDB() {
-        db.toDB(this.kindname, this.readBones());
+        db.put(this.kindname, this.readBones());
     }
 
     async fromDB(key) {

@@ -7,7 +7,7 @@ var app = express();
 app.use(session({ secret: "-", cookie: { maxAge: 60*60*1000 }}));
 import * as jsonhandler from "./routes/json";
 import * as htmlhandler from "./routes/html";
-import * as filehandler from "./prototypes/file";
+import * as filehandler from "./routes/file";
 
 
 var request;
