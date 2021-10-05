@@ -2,7 +2,7 @@
  * Starts the main Server 
  */
 import * as express from "express";
-var session = require('express-session');
+const session = require('express-session');
 var app = express();
 app.use(session({ secret: "-", cookie: { maxAge: 60*60*1000 }}));
 import * as jsonhandler from "./routes/json";

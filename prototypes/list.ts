@@ -3,7 +3,7 @@
  */
 import {utils} from "../utils";
 import {exposed} from "../decerators";
-import {db, list} from "../db";
+import {db} from "../db";
 import {json} from "../routes/json";
 
 export class List {
@@ -57,7 +57,7 @@ export class List {
      */
      @exposed
      async list() {
-        return  this.render(await db.list(this.classname()));
+        return  this.render(await db.get(this.classname()));
      }
      /**
       * 

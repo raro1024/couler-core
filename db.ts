@@ -1,5 +1,9 @@
-import { Error } from "./errors";
-import { utils } from "./utils";
+import {
+    Error
+} from "./errors";
+import {
+    utils
+} from "./utils";
 
 /**
  * this Class handel all db write and read stuff with mongodb 
@@ -35,11 +39,12 @@ export async function toDB(module, data) {
 
 }
 
-export async function get(module, key) {
+export async function get(module, key={}, limit = 100) {
 
 
     var client = await connectToDB();
     var db = client.db();
+    console.log(key)
     var dataPromies = new Promise((resolve, reject) => {
 
         if (typeof key === "string") {
@@ -47,33 +52,13 @@ export async function get(module, key) {
                 "_id": ObjectId(key)
             }
         }
-        if(utils.isEmpty(key))
-        {
+        if (utils.isEmpty(key)) {
             console.log("KEY ERR")
-            throw new Error({"msg":"Key was empty"});
+            throw new Error({
+                "msg": "Key was empty"
+            });
         }
-        db.collection(module).findOne(key, function (err, res) {
-            if (err) throw err;
-            client.close();
-            if (res != null) {
-                resolve(res);
-            } else {
-                reject();
-            }
-
-        });
-
-    });
-    return dataPromies;
-
-}
-//get a list of data 
-export async function list(module, limit = 99) {
-    console.log("list data")
-    var client = await connectToDB();
-    var db = client.db();
-    var dataPromies = new Promise((resolve, reject) => {
-        db.collection(module).find({}).limit(limit).toArray(function (err, res) {
+        db.collection(module).find(key).limit(limit).toArray(function (err, res) {
             if (err) throw err;
             client.close();
             if (res != null) {
@@ -84,6 +69,7 @@ export async function list(module, limit = 99) {
             }
 
         });
+
 
     });
     return dataPromies;

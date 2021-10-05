@@ -2,7 +2,6 @@
  * List Bone for Bones
  * 
  */
-import { any } from "webidl-conversions";
 import {
     Skeleton
 } from "../skeleton";
