@@ -7,6 +7,7 @@ var app = express();
 app.use(session({ secret: "-", cookie: { maxAge: 60*60*1000 }}));
 import * as jsonhandler from "./routes/json";
 import * as htmlhandler from "./routes/html";
+import * as filehandler from "./prototypes/file";
 
 
 var request;
@@ -19,7 +20,7 @@ app.all("*",function(req, res,next)
     request=req;
     next();
 });
-
+app.use(filehandler.router)
 //Standart json handler
 app.use(jsonhandler.router);
 //Standart html handler
