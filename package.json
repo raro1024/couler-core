@@ -1,7 +1,7 @@
 {
-  "name": "couler-core",
-  "version": "0.2.1",
-  "description": "",
+  "name": "exnode-core",
+  "version": "0.2.2",
+  "description": "exnode-core CMS",
   "main": "main.js",
   "dependencies": {
     "connect-busboy": "^0.0.2",
@@ -21,12 +21,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/raro1024/couler-core.git"
+    "url": "git+https://github.com/raro1024/exnode-core.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/raro1024/couler-core/issues"
+    "url": "https://github.com/raro1024/exnode-core/issues"
   },
-  "homepage": "https://github.com/raro1024/couler-core#readme"
+  "homepage": "https://github.com/raro1024/exnode-core#readme",
+  "devDependencies": {}
 }
