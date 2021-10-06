@@ -9,6 +9,7 @@ import * as storagelocal from "../storage/localfs";
 import * as storagegridfs from "../storage/gridfs";
 import { db } from "../db";
 import { conf } from "../conf";
+import { Error } from "../errors";
 
 const ObjectId = require('mongodb').ObjectId;
 
@@ -52,15 +53,20 @@ router.post('/file/upload', upload.single('myFile'), async (req, res, next) => {
     res.send(obj)
 })
 router.get('/file/download/:key', async(req, res) => {
-    var filedata = await db.get("file",req.params.key)
+    
+    var filedata = (await db.get("file",req.params.key))[0]
+    if(!filedata)
+    {
+        new Error().send(404,"FILE not found",res)
+    }
     if(filedata["mode"]==="gridfs")
     {
-        storagemodes[mode].sendFile({"_id": ObjectId(filedata["id"])},res)
+        console.log("Start to get file")
+        storagemodes["gridfs"].sendFile({"_id": ObjectId(filedata["id"])},res)
     }
     if(filedata["mode"]==="local")
     {
-        console.log(filedata)
-        storagemodes[mode].sendFile(filedata,res)
+        storagemodes["local"].sendFile(filedata,res)
 
     }
 })

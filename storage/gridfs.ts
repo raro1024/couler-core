@@ -36,6 +36,7 @@ export async function sendFile(key, res) {
         bucketName: 'fs'
     });
     bucket.find(key).toArray((err, files) => {
+        console.log(files)
         bucket.openDownloadStreamByName(files[0]["filename"]).pipe(res);
     });
 

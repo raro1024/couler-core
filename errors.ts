@@ -31,5 +31,10 @@ export class Error
         return [404,this.value];
         
     }
+    send(statusCode,msg,res)
+    {
+        res.writeHead(statusCode)
+        res.end(msg)
+    }
     
 }

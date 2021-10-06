@@ -7,6 +7,7 @@ import {
 } from "../errors";
 import * as ejs from 'ejs'; // For the templates
 import * as path from 'path';
+import { utils } from "../utils";
 export const name = "html" //name of The renderer
 export const router = express.Router();
 router.use(express.urlencoded({
@@ -15,7 +16,8 @@ router.use(express.urlencoded({
 router.use((req, res, next) => {
     req["handlername"] = "html"; // Set the handler Namer
     next();
-})
+});
+
 /**
  * Load Instance of a Module the call the handler
  * If the Handler is Async the data will send when the Promies is fullfiled
@@ -42,8 +44,7 @@ router.all(['/:module/:handler/*', '/:module/:handler', '/:module/', "*"], (req,
             }
         }
     }
-    if (Object.getPrototypeOf(m_.constructor).name.toLocaleLowerCase() == "singel")
-    {
+    if (Object.getPrototypeOf(m_.constructor).name.toLocaleLowerCase() == "singel") {
         if (handler === undefined || handlername == undefined) // hander is not set try defaul list handler
         {
             handlername = "view";
@@ -51,16 +52,18 @@ router.all(['/:module/:handler/*', '/:module/:handler', '/:module/', "*"], (req,
             if (handler === undefined) {
                 throw "No view"
             }
-        } 
-    } 
+        }
+    }
     if (!decerators.isExposed(m_, handler.name)) //Check if Function is Exposed if not break;
     {
         throw "No exposed";
     }
     switch (handler.constructor.name) {
         case "AsyncFunction":
-            m_[handlername](params).then((data) => {
-                res.end(data.toString());
+            m_[handlername](params).then(([template,skel]) => {
+                //I hope i get a temaplate and a skel/skellist
+                console.log("yea data returnds")
+                render(template,skel,res)
 
             }).catch((error) => {
                 handleError(res, error);
@@ -69,8 +72,9 @@ router.all(['/:module/:handler/*', '/:module/:handler', '/:module/', "*"], (req,
             break
         case "Function":
             try {
-                res.end(m_[handlername](params).toString())
-
+                let [template,skel]=m_[handlername](params)
+                render(template,skel,res)
+                
             } catch (error) {
                 handleError(res, error);
             }
@@ -136,20 +140,28 @@ function handleError(res, error) {
     }
 }
 
-export async function render(filename, data = {}) {
+export async function render(template, skel = {},res) {
+    if(utils.isArray(skel))
+    {
 
-    return await new Promise((resolve, reject) => {
-        ejs.renderFile(path.join(__dirname, '../views/' + filename), {
-            data: data
-        }, function (err, str) {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(str);
-            }
+        res.render(template, {
+            layout: false,
+            skellist: skel
+    
+        });
 
-        })
-    }).then((data) => data);
+    }
+    else
+    {
+
+        res.render(template, {
+            layout: false,
+            skel: skel
+    
+        });
+
+    }
+    
 }
 
 export * as html from "./html";

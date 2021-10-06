@@ -42,7 +42,7 @@ export function setUserSession(userkey)
    
     const getRequestData =require("./main");
     var sessionID = getRequestData().sessionID;   
-    db.toDB("sessions",{"sessionID":sessionID,"userkey":userkey});
+    db.put("sessions",{"sessionID":sessionID,"userkey":userkey});
 }
 
 export function isPostRequest()
@@ -79,4 +79,7 @@ export function isEmpty(obj)
 {
     return Object.keys(obj).length === 0;
 }
+export function isArray (a) {
+    return (!!a) && (a.constructor === Array);
+};
 export * as utils from "./utils";

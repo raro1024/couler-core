@@ -8,18 +8,24 @@ app.use(session({ secret: "-", cookie: { maxAge: 60*60*1000 }}));
 import * as jsonhandler from "./routes/json";
 import * as htmlhandler from "./routes/html";
 import * as filehandler from "./routes/file";
+import * as exphbs from 'express-handlebars';
 
 
 var request;
 var userid = "6147824759f79e71d01ffc27";
 
 let port = 8080;
-app.set('view engine', 'ejs');
+var hbs = exphbs.create({extname: 'hbs'});
+app.engine('.hbs', exphbs({extname: '.hbs'}));
+app.set('view engine', '.hbs');
+
+
 app.all("*",function(req, res,next) 
 {
     request=req;
     next();
 });
+
 app.use(filehandler.router)
 //Standart json handler
 app.use(jsonhandler.router);

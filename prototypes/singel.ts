@@ -12,8 +12,8 @@ import {
 } from "../utils";
 
 export class Singel {
-    indexTemplate = "index.ejs";
-    viewTemplate = "view.ejs"
+    indexTemplate = "index.hbs";
+    viewTemplate = "view.hbs"
     constructor() {
 
     }
@@ -22,22 +22,22 @@ export class Singel {
     }
     @exposed
     async view(key = undefined) {
-        
+        console.log(key)
         if (key !== undefined && !utils.isEmpty(key)) {
-            return this.render(await db.get(this.classname(), key));
+            return this.render(this.viewTemplate,await db.get(this.classname(), key));
         }
         return this.render();
 
     }
-    render(data = {}, template = this.indexTemplate) {
+    render(template = this.indexTemplate,skel = {}) {
         let renderer = utils.getCurrentRender();
         switch (utils.getCurrentRenderName()) {
             case "json":
-                return renderer.render(data)
+                return renderer.render(skel)
             case "html":
-                return renderer.render(template, data)
+                return [template,skel]
             default:
-                return json.render(data)
+                return json.render(skel)
         }
     }
 }

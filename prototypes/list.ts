@@ -9,6 +9,7 @@ import {json} from "../routes/json";
 export class List {
     kindname:any;
     listTemplate:string="list.ejs"
+    addTemplate:string="add.ejs"
     constructor() {
 
     }
@@ -21,8 +22,9 @@ export class List {
      * @returns 
      */
     async add(skel, data) {
+        
         if (!utils.isPostRequest()) {
-            throw "Add Request only over POST";
+           return this.render(skel,this.addTemplate)
         }
 
         await skel.writeBones(data,true);
@@ -59,6 +61,7 @@ export class List {
      async list() {
         return  this.render(await db.get(this.classname()));
      }
+     
      /**
       * 
       * @param data 
