@@ -5,9 +5,10 @@ import * as modules from "../../modules/init"; //Err if not exist but its ok :D
 import {
     Error
 } from "../errors";
-import * as ejs from 'ejs'; // For the templates
-import * as path from 'path';
-import { utils } from "../utils";
+
+import {
+    utils
+} from "../utils";
 export const name = "html" //name of The renderer
 export const router = express.Router();
 router.use(express.urlencoded({
@@ -24,7 +25,7 @@ router.use((req, res, next) => {
  * First the Folder with normal modules will check
  */
 
-router.all(['/:module/:handler/*', '/:module/:handler', '/:module/', "*"], (req, res) => {
+router.all(['/:module/:handler/:key', '/:module/:handler', '/:module/', "*"], (req, res) => {
     //Load Module
     var params = getParams(req);
     var module_: any = getModule(req);
@@ -34,6 +35,7 @@ router.all(['/:module/:handler/*', '/:module/:handler', '/:module/', "*"], (req,
     var handler = m_[handlername];
 
     if (Object.getPrototypeOf(m_.constructor).name.toLocaleLowerCase() == "list") { // Check if Parent class is list
+        console.log(params)
         if (handler === undefined || handlername == undefined) // hander is not set try defaul list handler
         {
             handlername = "list";
@@ -60,21 +62,32 @@ router.all(['/:module/:handler/*', '/:module/:handler', '/:module/', "*"], (req,
     }
     switch (handler.constructor.name) {
         case "AsyncFunction":
-            m_[handlername](params).then(([template,skel]) => {
-                //I hope i get a temaplate and a skel/skellist
-                console.log("yea data returnds")
-                render(template,skel,res)
+            m_[handlername](params).then((data) => {
+                console.log("now send template")
+                if(data)
+                {
+                    const template =data[0];
+                    const skel =data[1];
+                    render(template, skel, res)
+                }
+                else
+                {
+                    render(m_.defaultTemplate,{},res)
+                }
+               
 
             }).catch((error) => {
+                console.log("!!!ERR!!!")
+                console.log(error)
                 handleError(res, error);
 
             });
             break
         case "Function":
             try {
-                let [template,skel]=m_[handlername](params)
-                render(template,skel,res)
-                
+                let [template, skel] = m_[handlername](params)
+                render(template, skel, res)
+
             } catch (error) {
                 handleError(res, error);
             }
@@ -85,16 +98,31 @@ router.all(['/:module/:handler/*', '/:module/:handler', '/:module/', "*"], (req,
 });
 
 function getParams(req) {
-    if (req.query === undefined || Object.keys(req.query).length == 0) {
-        if (req.body) {
-            return req.body;
+    const module = req.params.module;
+    const handler = req.params.handler;
+    const key = req.params.key;
+    var params={}
+    if (module) {
+        if (handler) {
+            if (key) {
+                params["key"]=key;
+                if (req.query !== undefined || Object.keys(req.query).length > 0) {
+                    for (const [key_, val] of Object.entries(req.query)) {
+                        params[key_]=val;
+                    }
+                    
+                }
+                if (req.body !== undefined || Object.keys(req.body).length > 0) {
+                    for (const [key_, val] of Object.entries(req.body)) {
+                        params[key_]=val;
+                    }
+                }
+                return params;
+            }
         }
-        return {
-            key: req.params["0"]
-        }
-    } else {
-        return req.query
+        return
     }
+    return
 }
 
 function getModule(req) {
@@ -140,28 +168,26 @@ function handleError(res, error) {
     }
 }
 
-export async function render(template, skel = {},res) {
-    if(utils.isArray(skel))
-    {
-
+function render(template, skel = {}, res) {
+    if (!template) {
+        res.send("no template ")
+    }
+    if (utils.isArray(skel)) {
         res.render(template, {
             layout: false,
             skellist: skel
-    
+
         });
 
-    }
-    else
-    {
-
+    } else {
         res.render(template, {
             layout: false,
             skel: skel
-    
+
         });
 
     }
-    
+
 }
 
 export * as html from "./html";

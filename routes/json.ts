@@ -23,7 +23,7 @@ router.use((req,res,next)=>{
     req["handlername"]="json"; // Set the handler Namer
     next();
 })
-router.all(['/json/:module/:handler/*', '/json/:module/:handler', '/json/:module/',"/json*"], (req, res) => {
+router.all(['/json/:module/:handler/:key', '/json/:module/:handler', '/json/:module/',"/json*"], (req, res) => {
     //Load Module
     var params = getParams(req);
     var module_: any = getModule(req);
@@ -48,6 +48,8 @@ router.all(['/json/:module/:handler/*', '/json/:module/:handler', '/json/:module
     }
     switch (handler.constructor.name) {
         case "AsyncFunction":
+            console.log("params")
+            console.log(params)
             m_[handlername](params).then((data) => {
                 if (typeof data === "object") {
                     res.json(data)
@@ -75,18 +77,32 @@ router.all(['/json/:module/:handler/*', '/json/:module/:handler', '/json/:module
 });
 
 function getParams(req) {
-    if (req.query === undefined || Object.keys(req.query).length == 0) {
-        if (req.body) {
-            return req.body;
+    const module = req.params.module;
+    const handler = req.params.handler;
+    const key = req.params.key;
+    var params={}
+    if (module) {
+        if (handler) {
+            if (key) {
+                params["key"]=key;
+                if (req.query !== undefined || Object.keys(req.query).length > 0) {
+                    for (const [key_, val] of Object.entries(req.query)) {
+                        params[key_]=val;
+                    }
+                    
+                }
+                if (req.body !== undefined || Object.keys(req.body).length > 0) {
+                    for (const [key_, val] of Object.entries(req.body)) {
+                        params[key_]=val;
+                    }
+                }
+                return params;
+            }
         }
-        return {
-            key: req.params["0"]
-        }
-    } else {
-        return req.query
+        return
     }
+    return
 }
-
 function getModule(req) {
 
     var requestmodule: string;

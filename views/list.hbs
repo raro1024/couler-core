@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <ul>
+         {{#each skellist}}
+            <li>{{@key}}</li>
+            <ul>
+            {{#each this}}
+                <li>{{@key}}: {{toJSON @this}}</li>
+            {{/each}}
+            </ul>
+        {{/each}}
+        </ul>
+
+    </body>
+</html>

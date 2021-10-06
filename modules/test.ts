@@ -67,5 +67,13 @@ export class Test extends List {
     addSkel() {
         return new TestSkel();
     }
+    @exposed
+    async test({key,one,two})
+    {
+       console.log("in test")
+       console.log(key,one,two)
+       console.log(arguments[0])
+       return arguments
+    }
     
 }

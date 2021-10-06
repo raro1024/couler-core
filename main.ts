@@ -15,8 +15,13 @@ var request;
 var userid = "6147824759f79e71d01ffc27";
 
 let port = 8080;
-var hbs = exphbs.create({extname: 'hbs'});
-app.engine('.hbs', exphbs({extname: '.hbs'}));
+
+app.engine('.hbs', exphbs({
+    extname: '.hbs',
+    helpers:{
+        "toJSON":function(object){return JSON.stringify(object)}
+    }
+}));
 app.set('view engine', '.hbs');
 
 

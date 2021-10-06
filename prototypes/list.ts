@@ -8,8 +8,10 @@ import {json} from "../routes/json";
 
 export class List {
     kindname:any;
-    listTemplate:string="list.ejs"
-    addTemplate:string="add.ejs"
+    defaultTemplate:string="index.hbs"
+    listTemplate:string="list.hbs"
+    viewTemplate:string="view.hbs"
+    addTemplate:string="add.hbs"
     constructor() {
 
     }
@@ -41,16 +43,13 @@ export class List {
      */
     @exposed
     async view(key) {
-        utils.getCurrentRender();
+        console.log("view key is "+key)
         var userpromise;
         if (key === "self") {
             userpromise = utils.getCurrentUser().then(data => data);
         } else {
-            userpromise = db.get(this.classname(), key);
+            return  this.render(this.viewTemplate,await db.get(this.classname(),key));
         }
-
-        return userpromise;
-
     }
     /**
      *
@@ -59,7 +58,7 @@ export class List {
      */
      @exposed
      async list() {
-        return  this.render(await db.get(this.classname()));
+        return  this.render(this.listTemplate,await db.get(this.classname()));
      }
      
      /**
@@ -67,18 +66,18 @@ export class List {
       * @param data 
       * @param template If html the Site to render
       */
-     render(data,template=this.listTemplate)
+     render(template=this.listTemplate,skel)
      {
        
         let renderer =utils.getCurrentRender();
         switch (utils.getCurrentRenderName())
         {
             case "json":
-                return renderer.render(data)
+                return renderer.render(skel)
             case "html":
-                return renderer.render(template,data)
+                return [template,skel]
             default :
-                return json.render(data)
+                return json.render(skel)
         }
      }
 }

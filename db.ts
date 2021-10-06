@@ -16,7 +16,7 @@ const username = "myUserAdmin";
 const password = "abc123";
 const url = "127.0.0.1";
 //const port=27017;
-
+const dbconn=connectToDB().then(conn=>conn);
 export async  function connectToDB(_url = undefined, dbName = "main") {
     // Replace the uri string with your MongoDB deployment's connection string.
     //const uri =`mongodb://${username}:${password}@${url}?retryWrites=true&writeConcern=majority`; // For local tests
@@ -50,9 +50,8 @@ export async function put(module, data) {
 export async function get(module, key={}, limit = 100) {
 
 
-    var client = await connectToDB();
+    var client = await dbconn;//await connectToDB();
     var db = client.db();
-    console.log(key)
     var dataPromies = new Promise((resolve, reject) => {
 
         if (typeof key === "string") {
@@ -65,8 +64,12 @@ export async function get(module, key={}, limit = 100) {
         }
         db.collection(module).find(key).limit(limit).toArray(function (err, res) {
             if (err) throw err;
-            client.close();
+            //client.close();
             if (res != null) {
+                if(res.length==1)
+                {
+                    resolve(res[0])
+                }
                 resolve(res);
                
             } else {
