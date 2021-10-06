@@ -1,9 +1,9 @@
 import {
     stringBone
-} from "./bones/stringbone";
+} from "./bones/stringBone";
 import {
     dateBone
-} from "./bones/datebone";
+} from "./bones/dateBone";
 
 import {
     db
@@ -21,10 +21,12 @@ export class Skeleton {
     changedate: dateBone;
     constructor() {
         this.createdate = new dateBone({
-            defaultValue: Date.now()
+            defaultValue: Date.now(),
+            visible:false
         });
         this.changedate = new dateBone({
-            defaultValue: Date.now()
+            defaultValue: Date.now(),
+            visible:false
         });
     }
     /**
@@ -84,6 +86,8 @@ export class Skeleton {
     }
 
     toDB() {
+        console.log("read bone before wirte")
+        console.log(this.readBones())
         db.put(this.kindname, this.readBones());
     }
 

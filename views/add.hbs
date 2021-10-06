@@ -4,12 +4,15 @@
 
     </head>
     <body>
-        add
-       {{#each skel}}
+        <h3>ADD</h3>
+        <form method="POST">
+        {{#each skel}}
             {{{renderBone @key this}}}
             <br>
 
         {{/each}}
+        <button type="submit">Senden</button>
+        </form>
 
     </body>
 </html>

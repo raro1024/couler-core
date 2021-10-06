@@ -5,7 +5,7 @@
  import {exposed} from "../decerators";
  import {db} from "../db";
  import {json} from "../routes/json";
-import { stringBone } from "../bones/stringbone";
+import { stringBone } from "../bones/stringBone";
  
  export class Tree {
      kindname:any;

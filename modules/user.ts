@@ -5,7 +5,7 @@ import {db} from "../db";
 import {utils} from "../utils";
 import {exposed} from "../decerators";
 import {Error} from "../errors";
-import { stringBone } from "../bones/stringbone";
+import { stringBone } from "../bones/stringBone";
 import { passswordBone } from "../bones/passwordbone";
 
 

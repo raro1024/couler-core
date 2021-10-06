@@ -29,6 +29,9 @@ export async  function connectToDB(_url = undefined, dbName = "main") {
 }
 
 export async function put(module, data) {
+    console.log("Wirte Data to DB")
+    console.log(module)
+    console.log(data)
     var client = await connectToDB();
     var db = client.db();
     var keyPromies = new Promise((resolve, reject) => {
