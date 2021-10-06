@@ -4,13 +4,13 @@
  */
 
 
- import {db} from "./db";
+import {db} from "./db";
 import { html } from "./routes/html";
 import { json } from "./routes/json";
 
  export function getSessionKey()
 {
-    const getRequestData =require("./main");
+    const getRequestData =require("./index");
     var ssid = getRequestData().sessionID;
     
     return ssid ;
@@ -40,14 +40,14 @@ export function getCurrentUser()
 export function setUserSession(userkey)
 {
    
-    const getRequestData =require("./main");
+    const getRequestData =require("./index");
     var sessionID = getRequestData().sessionID;   
     db.put("sessions",{"sessionID":sessionID,"userkey":userkey});
 }
 
 export function isPostRequest()
 {
-    const getRequestData =require("./main");
+    const getRequestData =require("./index");
     console.log(getRequestData()["method"])
     return getRequestData()["method"]==="POST"
 }
@@ -72,7 +72,7 @@ export function getCurrentRender()
 }
 export function getCurrentRenderName()
 {
-    const getRequestData =require("./main");
+    const getRequestData =require("./index");
     return getRequestData().handlername;
 }
 export function isEmpty(obj)

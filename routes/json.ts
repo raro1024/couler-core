@@ -1,7 +1,12 @@
 import * as express from "express";
 import * as decerators from "../decerators";
 import * as coremodules from "../modules/init";
-import * as modules from "../../modules/init"; //Err if not exist but its ok :D
+const modulesPath= "../../modules/init";
+var modules={};
+try {
+    modules=require(modulesPath)
+}catch(e){}
+
 import {
     Error
 } from "../errors";
@@ -85,19 +90,19 @@ function getParams(req) {
         if (handler) {
             if (key) {
                 params["key"]=key;
-                if (req.query !== undefined || Object.keys(req.query).length > 0) {
-                    for (const [key_, val] of Object.entries(req.query)) {
-                        params[key_]=val;
-                    }
-                    
-                }
-                if (req.body !== undefined || Object.keys(req.body).length > 0) {
-                    for (const [key_, val] of Object.entries(req.body)) {
-                        params[key_]=val;
-                    }
-                }
-                return params;
             }
+            if (req.query !== undefined || Object.keys(req.query).length > 0) {
+                for (const [key_, val] of Object.entries(req.query)) {
+                    params[key_]=val;
+                }
+                
+            }
+            if (req.body !== undefined || Object.keys(req.body).length > 0) {
+                for (const [key_, val] of Object.entries(req.body)) {
+                    params[key_]=val;
+                }
+            }
+            return params;
         }
         return
     }

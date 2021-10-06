@@ -26,13 +26,11 @@ export class List {
     async add(skel, data) {
         
         if (!utils.isPostRequest()) {
-           return this.render(skel,this.addTemplate)
+            
+           return this.render(this.addTemplate,skel)
         }
-
         await skel.writeBones(data,true);
         skel.toDB();
-        return "ok"
-
     }
     /**
      * 

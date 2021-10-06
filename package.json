@@ -2,7 +2,7 @@
   "name": "exnode-core",
   "version": "0.2.2",
   "description": "exnode-core CMS",
-  "main": "main.js",
+  "main": "index.js",
   "dependencies": {
     "connect-busboy": "^0.0.2",
     "ejs": "^3.1.6",
@@ -17,7 +17,7 @@
     "reflect-metadata": "^0.1.13"
   },
   "scripts": {
-    "test": "nodemon main.js"
+    "test": "nodemon index.js"
   },
   "repository": {
     "type": "git",

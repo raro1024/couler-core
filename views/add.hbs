@@ -1,13 +1,15 @@
-
 <!DOCTYPE html>
 <html>
     <head>
 
     </head>
     <body>
-    ADD
-    <%= JSON.pare(skel)%>
-   
-    
+        add
+       {{#each skel}}
+            {{{renderBone @key this}}}
+            <br>
+
+        {{/each}}
+
     </body>
 </html>

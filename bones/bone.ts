@@ -2,6 +2,8 @@
  * Basic Bone
  */
 export class Bone {
+    type: string;
+    descr: any;
     _value: any;
     multiple: boolean;
     defaultValue: any;
@@ -14,7 +16,9 @@ export class Bone {
      * 
      * 
      */
-    constructor(multiple = false, defaultValue: null, required = false, unique = false) {
+    constructor({descr=undefined, multiple = false, defaultValue = null, required = false, unique = false}) {
+        this.type = "bone";
+        this.descr = descr||"";
         this._value = null;
         this.multiple = multiple;
         this.defaultValue = defaultValue;
@@ -37,7 +41,7 @@ export class Bone {
         if (_val == undefined) {
             this._value = this.defaultValue;
         } else {
-            
+
             this._value = _val;
         }
 

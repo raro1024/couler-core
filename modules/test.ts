@@ -31,26 +31,17 @@ import {
 import { conf } from "../conf";
 import { fileBone } from "../bones/fileBone";
 
-class TestRecordSkel extends Skeleton {
-    testBone: stringBone;
-    testBone1: stringBone;
-    constructor() {
-        super();
-        this.testBone = new stringBone();
-        this.testBone1 = new stringBone();
-    }
-}
 
 class TestSkel extends Skeleton {
     kindname = "test"
     name: stringBone;
-    fileTest: fileBone;
+    fileTest: stringBone;
 
     constructor() {
         super();
         //this.testRecord = new recordBone({using:TestRecordSkel});
-        this.name = new stringBone();
-        this.fileTest = new fileBone();
+        this.name = new stringBone({descr:"test descr"});
+        this.fileTest = new stringBone({required:true});
 
     }
 
@@ -61,11 +52,15 @@ export class Test extends List {
     }
     @exposed
     async add(data) {
+        console.log("post adta")
+        console.log(data)
         return super.add(this.addSkel(), data);
     }
     //Create an Instace off the Skel
     addSkel() {
-        return new TestSkel();
+        const skel = new TestSkel();
+        delete skel.kindname;
+        return skel
     }
     @exposed
     async test({key,one,two})

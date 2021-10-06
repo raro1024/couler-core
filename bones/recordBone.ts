@@ -11,53 +11,44 @@ import {
 
 export class recordBone extends Bone {
     using: typeof Skeleton;
-    declare _value:  Skeleton;
-    constructor({
-        multiple = false,
-        defaultValue = undefined,
-        required = false,
-        unique = false,
-        using = Skeleton
-    } = {}) {
-        super(multiple = multiple, defaultValue = defaultValue, required = required, unique = unique);
+    declare _value: Skeleton;
+    constructor({descr=undefined, multiple = false, defaultValue= undefined, required = false,unique=false ,using=undefined}={})
+    { 
+        super({descr: descr, multiple : multiple, defaultValue: defaultValue, required : required,unique:unique});
         this.using = using;
+        this.type = "record";
 
     }
     get data() {
-        var bonevals={}
+        var bonevals = {}
 
-        for (const [bonename, bone] of Object.entries(this._value)) 
-        {
+        for (const [bonename, bone] of Object.entries(this._value)) {
             if (typeof bone === "object") {
 
-                bonevals[bonename]=bone.data;
+                bonevals[bonename] = bone.data;
             }
         }
         return bonevals
     }
 
     set data(_val) {
-        if(_val==undefined)
-        {
+        if (_val == undefined) {
             throw "No Values In Record Bone"
         }
-        if (typeof _val === "string")
-        {
-            _val=JSON.parse(_val)
+        if (typeof _val === "string") {
+            _val = JSON.parse(_val)
         }
-       
+
         if (_val && typeof _val === "object") {
-            var skel=new this.using()
+            var skel = new this.using()
             for (const [bonename, bone] of Object.entries(skel)) {
                 if (typeof bone === "object") {
                     console.log(_val[bonename])
                     bone.data = _val[bonename];
                 }
             }
-            this._value=skel
-        }
-        else
-        {
+            this._value = skel
+        } else {
             throw "No Value  or No  object in record Bone"
         }
 

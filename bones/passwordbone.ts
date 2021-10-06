@@ -5,8 +5,10 @@ const crypto = require('crypto');
 
 export class passswordBone extends Bone {
 
-    constructor({multiple = false, defaultValue= undefined, required = true}={}) {
-        super(multiple = multiple, defaultValue= defaultValue, required = required);
+    constructor({descr=undefined, multiple = false, defaultValue= undefined, required = false,unique=false }={})
+    { 
+        super({descr: descr, multiple : multiple, defaultValue: defaultValue, required : required,unique:unique});
+        this.type = "password";
     }
     get data() {
         return this._value;

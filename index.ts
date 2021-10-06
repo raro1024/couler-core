@@ -9,17 +9,23 @@ import * as jsonhandler from "./routes/json";
 import * as htmlhandler from "./routes/html";
 import * as filehandler from "./routes/file";
 import * as exphbs from 'express-handlebars';
-
+import * as boneRenderer from "./bones/html/init"
 
 var request;
-var userid = "6147824759f79e71d01ffc27";
 
 let port = 8080;
 
 app.engine('.hbs', exphbs({
     extname: '.hbs',
     helpers:{
-        "toJSON":function(object){return JSON.stringify(object)}
+        "toJSON":function(object){return JSON.stringify(object)},
+        "renderBone":function(boneName,bone){
+            if(bone)
+            {
+                return boneRenderer[bone.type](boneName,bone)
+            }
+            
+        }
     }
 }));
 app.set('view engine', '.hbs');
