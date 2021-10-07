@@ -93,8 +93,6 @@ export class Skeleton {
     }
 
     toDB() {
-        console.log("read bone before wirte")
-        console.log(this.readBones())
         return db.put(this.kindname, this.readBones());
     }
 

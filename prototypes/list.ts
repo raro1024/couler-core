@@ -13,7 +13,7 @@ import {
 import {
     json
 } from "../routes/json";
-
+import * as objectPath from "object-Path";
 export class List {
     kindname: any;
     defaultTemplate: string = "index.hbs"
@@ -39,7 +39,7 @@ export class List {
      */
     async add(skel, data) {
         console.log("in ADD")
-        if (!utils.isPostRequest()) { 
+        if (!utils.isPostRequest()) {
             //Delete all Bones and Attributes that are not needed
             delete skel.kindname;
             for (const [bonename, bone] of Object.entries(skel)) {
@@ -53,16 +53,15 @@ export class List {
             return this.render(this.addTemplate, skel)
         }
         //Prepare data before we wirting it to the bones
-        
-        var modifiedData=this.prepareData(data);
+
+        var modifiedData = this.prepareData(data);
         await skel.writeBones(modifiedData, true);
         var key = await skel.toDB();
 
-        if (key)
-        {
-            return this.render(this.addSuccessTemplate,skel.readBones())
+        if (key) {
+            return this.render(this.addSuccessTemplate, skel.readBones())
         }
-     
+
     }
     /**
      * 
@@ -108,55 +107,39 @@ export class List {
                 return json.render(skel)
         }
     }
-    prepareData(data)
-    {
-        console.log("###Prepare######")
-        console.log(data)        
 
-        var modifiedData={}
-        for (const [boneName, boneData] of Object.entries(data)) 
-        {
-
-            if(boneName.indexOf(".")==-1)
-            {
-                console.log("Noraml value")
-                
-                console.log(boneName,boneData)
-                modifiedData[boneName]=boneData
+    /**
+     * 
+     * @param data 
+     * @returns modifiedData
+     * Options for the Names:
+     * {"boneName":boneData} will be  {"boneName":boneData}
+     * //Mulitple
+     * {"boneName:0":boneData} will be  {"boneName":[boneData]}
+     * if
+     * {"boneName.1":boneData1} will be  {"boneName":[boneData,boneData1]}
+     * 
+     * //Record
+     * {"recordBoneName.otherBoneName":boneData} will be  {"recordBoneName":{"otherBoneName":boneData}}
+     * 
+     */
+    prepareData(data) {
+        console.log(data)
+        console.log(data)
+        
+        var modifiedData = {}
+        for (const [boneName, boneData] of Object.entries(data)) {
+            
+            if (boneName.indexOf(":") == -1) {
+                objectPath.set(modifiedData, boneName, boneData)
             }
             else
             {
-                console.log("DETECT Record bone *********")
-                const tmpPath=boneName.split(".");
-                var refObjOld;
-                for(let i=0; i<tmpPath.length;i++)
-                {
-                    var refObj=i>0?refObjOld:modifiedData;
-                    if(refObj[tmpPath[i]])
-                    {
-                        refObj=refObj[tmpPath[i]];
-                        if(i+2==tmpPath.length)
-                        {
-                            refObj[tmpPath[i+1]]=boneData;
-                        }
-                        
-                    }
-                    else
-                    {
-                        refObj[tmpPath[i]]={};
-                        refObj=refObj[tmpPath[i]];
-                        if(i+2==tmpPath.length)
-                        {
-                            refObj[tmpPath[i+1]]=boneData;
-                        }
-                    }
-                    refObjOld=refObj;
-                }
-               
-               
+                objectPath.push(modifiedData, boneName.split(":")[0], boneData)
             }
-            
         }
+
         return modifiedData;
+        
     }
 }

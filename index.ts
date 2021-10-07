@@ -36,6 +36,7 @@ app.all("*",function(req, res,next)
     request=req;
     next();
 });
+app.use('/static', express.static('static'));
 
 app.use(filehandler.router)
 //Standart json handler
