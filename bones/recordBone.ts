@@ -1,5 +1,10 @@
 /**
- * List Bone for Bones
+ * Record Bone 
+ * Store the data in a dictionary
+ * @param using Is a the name of the Refskel (I cant use the class because I must check if the Bone have a using the ref to the skel)
+ * example
+ * Sekeleton A:
+ *  recordBone(using="A") 
  * 
  */
 import {
@@ -11,13 +16,30 @@ import {
 
 export class recordBone extends Bone {
     using: typeof Skeleton;
+    parent: typeof Skeleton;
     declare _value: Skeleton;
-    constructor({descr=undefined, multiple = false, defaultValue= undefined, required = false,unique=false ,using=undefined}={})
+    constructor({descr=undefined, multiple = false, defaultValue= undefined, required = false,unique=false ,using=undefined,parent=undefined}={})
     { 
         super({descr: descr, multiple : multiple, defaultValue: defaultValue, required : required,unique:unique});
         this.using = using;
         this.type = "record";
+        if(!using)
+        {
+            throw "No Using set in Recordbone"
+        }
+        if(!parent)
+        {
+            throw "No Parnet set in Recordbone"
+        }
 
+        if(parent.classname()===using.name.toLowerCase())
+        {
+            throw"Recordbone using is same Class as Parent "
+        }
+        
+       
+
+        
     }
     get data() {
         var bonevals = {}
@@ -43,7 +65,6 @@ export class recordBone extends Bone {
             var skel = new this.using()
             for (const [bonename, bone] of Object.entries(skel)) {
                 if (typeof bone === "object") {
-                    console.log(_val[bonename])
                     bone.data = _val[bonename];
                 }
             }
@@ -52,6 +73,22 @@ export class recordBone extends Bone {
             throw "No Value  or No  object in record Bone"
         }
 
+    }
+    renderer(boneName)
+    {   
+        let usingSkel= new this.using();//Create instance of using skel
+        var innerBone=``
+        for (const [bonename_, bone] of Object.entries(usingSkel)) {
+            if (typeof bone === "object") {
+                innerBone+=bone.renderer(boneName+"."+bonename_);
+            }
+        }
+        return`
+        
+        <div>
+            ${innerBone}
+        <div>
+        `
     }
 
 }

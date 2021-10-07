@@ -7,11 +7,11 @@ export class stringBone extends Bone {
         super({descr: descr, multiple : multiple, defaultValue: defaultValue, required : required,unique:unique});
         this.type = "string";
     }
-    renderer(boneName,bone)
+    renderer(boneName)
     {
-        return`
-        <label  for="${boneName}">${boneName}</label >
-        <input type="text" name="${boneName}" id="${boneName}" placeholder="${bone.descr}" ${bone.required?"required":""}></input>
+        return `
+        <label  for="${boneName}">${this.descr?this.descr:boneName}</label >
+        <input  type="text" name="${boneName}" id="${boneName}" placeholder="${this.descr}" ${this.required?"required":""} ${this.readonly?"required":""}></input>
         `
     }
     

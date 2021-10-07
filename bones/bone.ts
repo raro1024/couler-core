@@ -1,5 +1,7 @@
 import e = require("express");
-import { utils } from "../utils";
+import {
+    utils
+} from "../utils";
 
 /**
  * Basic Bone
@@ -11,22 +13,32 @@ import { utils } from "../utils";
  */
 export class Bone {
     type: string;
-    descr: any; 
+    descr: any;
     _value: any;
     multiple: boolean;
     defaultValue: any;
     required: boolean;
     unique: boolean;
     visible: boolean;
-    constructor({descr=undefined, multiple = false, defaultValue = null, required = false, unique = false,visible=true}) {
+    readonly: boolean;
+    constructor({
+        descr = undefined,
+        multiple = false,
+        defaultValue = null,
+        required = false,
+        unique = false,
+        visible = true,
+        readonly = false,
+    }) {
         this.type = "bone";
-        this.descr = descr||"";
+        this.descr = descr || "";
         this._value = null;
         this.multiple = multiple;
         this.defaultValue = defaultValue;
         this.required = required;
         this.unique = unique;
         this.visible = visible;
+        this.readonly = readonly;
         //Check if the params not exclude eachother
         if (!this.visible && this.required) throw `Error in ${this.classname()} not visible but required`;
         //this.default=default;
@@ -43,40 +55,29 @@ export class Bone {
     //Here is how it works :] https://imgur.com/a/QgaQ8xg ?? 
     set data(_val) {
         if (_val == undefined) {
-            if(this.defaultValue)
-            {
-                this.data=this.defaultValue
+            if (this.defaultValue) {
+                this.data = this.defaultValue
             }
-            
+
         } else {
-            if(this.multiple)
-            {
-                if(utils.isArray(_val))
-                {
-                    if(_val.length>0)
-                    {
-                        this._value=_val;
+            if (this.multiple) {
+                if (utils.isArray(_val)) {
+                    if (_val.length > 0) {
+                        this._value = _val;
                     }
 
+                } else {
+                    this._value = [_val];
                 }
-                else
-                {
-                    this._value=[_val];
-                }
-            }
-            else
-            {
-                if(utils.isArray(_val))
-                {
-                    this.data=_val[0]
-                }
-                else
-                {                    
-                    this._value=_val;
+            } else {
+                if (utils.isArray(_val)) {
+                    this.data = _val[0]
+                } else {
+                    this._value = _val;
                 }
             }
-           
-            
+
+
         }
 
     }
@@ -87,13 +88,13 @@ export class Bone {
 
         this._value = _val;
     }
-    renderer(boneName, bone) {
-        if (bone.visible) {
-            return `
-        <label  for="${boneName}">${boneName}</label >
-        <input type="date" name="${boneName}" id="${boneName}" placeholder="${bone.descr}" ${bone.required?"required":""}></input>
+    renderer(boneName, ) {
+
+        return `
+        <label  for="${boneName}">${this.descr?this.descr:boneName}</label >
+        <input  name="${boneName}" id="${boneName}" placeholder="${this.descr}" ${this.required?"required":""} ${this.readonly?"required":""}></input>
         `
-        }
+
     }
 
 }

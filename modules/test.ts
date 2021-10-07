@@ -1,5 +1,5 @@
 import {
-    Skeleton
+    Skeleton,RefSkeleton
 } from "../skeleton";
 import {
     List
@@ -28,10 +28,43 @@ import {
 import {
     Tree
 } from "../prototypes/tree";
-import { conf } from "../conf";
-import { fileBone } from "../bones/fileBone";
-import { numericBone } from "../bones/numericBone";
+import {
+    conf
+} from "../conf";
+import {
+    fileBone
+} from "../bones/fileBone";
+import {
+    numericBone
+} from "../bones/numericBone";
+import {
+    dateBone
+} from "../bones/dateBone";
 
+class RefRefSkelTest extends RefSkeleton {
+    stringtestRecord : stringBone;
+    numtestRecord : numericBone;
+    recrtest : recordBone;
+
+    constructor() {
+        super();
+        this.stringtestRecord = new stringBone();
+        this.numtestRecord  = new numericBone();
+    }
+}
+
+class TestRecordSkel extends RefSkeleton {
+    stringtestRecord : stringBone;
+    numtestRecord : numericBone;
+    recordinrecord : recordBone;
+
+    constructor() {
+        super();
+        this.stringtestRecord = new stringBone();
+        this.numtestRecord  = new numericBone();
+        this.recordinrecord=new recordBone({using:RefRefSkelTest,parent:this});
+    }
+}
 
 class TestSkel extends Skeleton {
     kindname = "test"
@@ -39,13 +72,16 @@ class TestSkel extends Skeleton {
     stringtest: stringBone;
     numtest: numericBone;
     passwordtest: passswordBone;
+    datetest: dateBone;
+    recordtest: recordBone;
 
     constructor() {
         super();
-        //this.testRecord = new recordBone({using:TestRecordSkel});
+        this.recordtest = new recordBone({using:TestRecordSkel,parent:this});
         this.stringtest = new stringBone();
-        //this.numtest = new numericBone();
-        //this.passwordtest = new passswordBone();
+        this.numtest = new numericBone({descr:"Ok num test"});
+        this.passwordtest = new passswordBone();
+        this.datetest = new dateBone();
 
     }
 
@@ -56,19 +92,12 @@ export class Test extends List {
     }
     @exposed
     async add(data) {
+        console.log("IN ADD OF TEST")
         return super.add(this.addSkel(), data);
     }
     //Create an Instace off the Skel
     addSkel() {
         return new TestSkel();
     }
-    @exposed
-    async test({key,one,two})
-    {
-       console.log("in test")
-       console.log(key,one,two)
-       console.log(arguments[0])
-       return arguments
-    }
-    
+
 }

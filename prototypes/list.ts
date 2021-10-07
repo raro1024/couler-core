@@ -36,7 +36,7 @@ export class List {
      * @returns 
      */
     async add(skel, data) {
-
+        console.log("in ADD")
         if (!utils.isPostRequest()) { 
             //Delete all Bones and Attributes that are not needed
             delete skel.kindname;
@@ -50,8 +50,10 @@ export class List {
 
             return this.render(this.addTemplate, skel)
         }
-
-        await skel.writeBones(data, true);
+        //Prepare data before we wirting it to the bones
+        
+        var modifiedData=this.prepareData(data);
+        await skel.writeBones(modifiedData, true);
         skel.toDB();
     }
     /**
@@ -97,5 +99,56 @@ export class List {
             default:
                 return json.render(skel)
         }
+    }
+    prepareData(data)
+    {
+        console.log("###Prepare######")
+        console.log(data)        
+
+        var modifiedData={}
+        for (const [boneName, boneData] of Object.entries(data)) 
+        {
+
+            if(boneName.indexOf(".")==-1)
+            {
+                console.log("Noraml value")
+                
+                console.log(boneName,boneData)
+                modifiedData[boneName]=boneData
+            }
+            else
+            {
+                console.log("DETECT Record bone *********")
+                const tmpPath=boneName.split(".");
+                var refObjOld;
+                for(let i=0; i<tmpPath.length;i++)
+                {
+                    var refObj=i>0?refObjOld:modifiedData;
+                    if(refObj[tmpPath[i]])
+                    {
+                        refObj=refObj[tmpPath[i]];
+                        if(i+2==tmpPath.length)
+                        {
+                            refObj[tmpPath[i+1]]=boneData;
+                        }
+                        
+                    }
+                    else
+                    {
+                        refObj[tmpPath[i]]={};
+                        refObj=refObj[tmpPath[i]];
+                        if(i+2==tmpPath.length)
+                        {
+                            refObj[tmpPath[i+1]]=boneData;
+                        }
+                    }
+                    refObjOld=refObj;
+                }
+               
+               
+            }
+            
+        }
+        return modifiedData;
     }
 }

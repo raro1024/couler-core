@@ -19,15 +19,17 @@ export class Skeleton {
     kindname: string;
     createdate: dateBone;
     changedate: dateBone;
-    constructor() {
-        this.createdate = new dateBone({
-            defaultValue: Date.now(),
-            visible:false
-        });
-        this.changedate = new dateBone({
-            defaultValue: Date.now(),
-            visible:false
-        });
+    constructor(isRef = false) {
+        if (!isRef) {
+            this.createdate = new dateBone({
+                defaultValue: Date.now(),
+                visible: false
+            });
+            this.changedate = new dateBone({
+                defaultValue: Date.now(),
+                visible: false
+            });
+        }
     }
     /**
      * 
@@ -38,7 +40,9 @@ export class Skeleton {
      * 
      */
     async writeBones(requestdata, fromClient = false) {
+
         console.log("Fill bones with Data from DB or reqest")
+        console.log(requestdata)
         for (const [bonename, bone] of Object.entries(this)) {
             if (typeof bone === "object") {
                 if (fromClient) {
@@ -80,9 +84,8 @@ export class Skeleton {
      * @param boneName Name of the Bone 
      * @param value 
      */
-    setBoneValue(boneName:string,value:any)
-    {
-        return this[boneName].data=value;
+    setBoneValue(boneName: string, value: any) {
+        return this[boneName].data = value;
     }
 
     toDB() {
@@ -94,4 +97,14 @@ export class Skeleton {
     async fromDB(key) {
 
     }
+    classname(_class = this) {
+        return _class.constructor.name.toLowerCase();
+    }
+}
+export class RefSkeleton extends Skeleton {
+    constructor() {
+        
+        super(true);
+    }
+    
 }

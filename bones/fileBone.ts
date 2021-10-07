@@ -39,5 +39,11 @@ export class fileBone extends Bone {
         }
 
     }
+    renderer(boneName) {
+        return `
+        <label  for="${boneName}">${this.descr?this.descr:boneName}</label >
+        <input  type="file" name="${boneName}" id="${boneName}" placeholder="${this.descr}" ${this.required?"required":""} ${this.readonly?"required":""}></input>
+        `
+    }
 
 }

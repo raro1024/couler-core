@@ -22,7 +22,7 @@ app.engine('.hbs', exphbs({
         "renderBone":function(boneName,bone){
             if(bone)
             {
-                return bone.renderer(boneName,bone)
+                return bone.renderer(boneName)
             }
             
         }
