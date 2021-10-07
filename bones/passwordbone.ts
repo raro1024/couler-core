@@ -8,7 +8,8 @@ export class passswordBone extends Bone {
     constructor({descr=undefined, multiple = false, defaultValue= undefined, required = false,unique=false }={})
     { 
         super({descr: descr, multiple : multiple, defaultValue: defaultValue, required : required,unique:unique});
-        this.type = "password";
+        this.type = "password"
+        this.required=true;
     }
     get data() {
         return this._value;
@@ -18,7 +19,7 @@ export class passswordBone extends Bone {
      */
     set data(_val) {
         
-        if (_val == undefined) {
+        if (_val == undefined || _val==='') {
            throw "Password is empty"
         } else {
             var salt= utils.randomString();
@@ -40,6 +41,15 @@ export class passswordBone extends Bone {
         return password==crypto.createHash('sha256').update(salt+_val).digest('base64')
 
     }
+    renderer(boneName,bone)
+    {
+    
+    return`
+    <label  for="${boneName}">${boneName}</label >
+    <input type="password" name="${boneName}" id="${boneName}" placeholder="${bone.descr}" ${bone.required?"required":""}></input>
+    `
+
+    }   
 
 
 }

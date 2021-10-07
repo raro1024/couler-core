@@ -21,7 +21,7 @@ import {
 } from "../bones/stringBone";
 import {
     passswordBone
-} from "../bones/passwordbone";
+} from "../bones/passwordBone";
 import {
     recordBone
 } from "../bones/recordBone";
@@ -38,13 +38,14 @@ class TestSkel extends Skeleton {
     name: stringBone;
     stringtest: stringBone;
     numtest: numericBone;
+    passwordtest: passswordBone;
 
     constructor() {
         super();
         //this.testRecord = new recordBone({using:TestRecordSkel});
-        this.name = new stringBone({descr:"test descr"});
-        this.stringtest = new stringBone({required:true});
-        this.numtest = new numericBone();
+        this.stringtest = new stringBone();
+        //this.numtest = new numericBone();
+        //this.passwordtest = new passswordBone();
 
     }
 

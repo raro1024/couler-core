@@ -42,9 +42,6 @@ export class Bone {
     }
     //Here is how it works :] https://imgur.com/a/QgaQ8xg ?? 
     set data(_val) {
-        console.log("set data")
-        console.log(typeof _val)
-        console.log(_val)
         if (_val == undefined) {
             if(this.defaultValue)
             {
@@ -89,6 +86,14 @@ export class Bone {
     set rawdata(_val) {
 
         this._value = _val;
+    }
+    renderer(boneName, bone) {
+        if (bone.visible) {
+            return `
+        <label  for="${boneName}">${boneName}</label >
+        <input type="date" name="${boneName}" id="${boneName}" placeholder="${bone.descr}" ${bone.required?"required":""}></input>
+        `
+        }
     }
 
 }

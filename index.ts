@@ -9,7 +9,7 @@ import * as jsonhandler from "./routes/json";
 import * as htmlhandler from "./routes/html";
 import * as filehandler from "./routes/file";
 import * as exphbs from 'express-handlebars';
-import * as boneRenderer from "./bones/html/init"
+import * as bones from "./bones/init"
 
 var request;
 
@@ -22,7 +22,7 @@ app.engine('.hbs', exphbs({
         "renderBone":function(boneName,bone){
             if(bone)
             {
-                return boneRenderer[bone.type](boneName,bone)
+                return bone.renderer(boneName,bone)
             }
             
         }
