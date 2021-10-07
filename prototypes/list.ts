@@ -19,7 +19,9 @@ export class List {
     defaultTemplate: string = "index.hbs"
     listTemplate: string = "list.hbs"
     viewTemplate: string = "view.hbs"
+
     addTemplate: string = "add.hbs"
+    addSuccessTemplate: string = "addSuccess.hbs"
     constructor() {
 
     }
@@ -54,7 +56,13 @@ export class List {
         
         var modifiedData=this.prepareData(data);
         await skel.writeBones(modifiedData, true);
-        skel.toDB();
+        var key = await skel.toDB();
+
+        if (key)
+        {
+            return this.render(this.addSuccessTemplate,skel.readBones())
+        }
+     
     }
     /**
      * 

@@ -40,31 +40,9 @@ import {
 import {
     dateBone
 } from "../bones/dateBone";
+import { booleanBone } from "../bones/booleanBone";
 
-class RefRefSkelTest extends RefSkeleton {
-    stringtestRecord : stringBone;
-    numtestRecord : numericBone;
-    recrtest : recordBone;
 
-    constructor() {
-        super();
-        this.stringtestRecord = new stringBone();
-        this.numtestRecord  = new numericBone();
-    }
-}
-
-class TestRecordSkel extends RefSkeleton {
-    stringtestRecord : stringBone;
-    numtestRecord : numericBone;
-    recordinrecord : recordBone;
-
-    constructor() {
-        super();
-        this.stringtestRecord = new stringBone();
-        this.numtestRecord  = new numericBone();
-        this.recordinrecord=new recordBone({using:RefRefSkelTest,parent:this});
-    }
-}
 
 class TestSkel extends Skeleton {
     kindname = "test"
@@ -74,14 +52,16 @@ class TestSkel extends Skeleton {
     passwordtest: passswordBone;
     datetest: dateBone;
     recordtest: recordBone;
+    booltest: booleanBone;
 
     constructor() {
         super();
-        this.recordtest = new recordBone({using:TestRecordSkel,parent:this});
+        
         this.stringtest = new stringBone();
         this.numtest = new numericBone({descr:"Ok num test"});
         this.passwordtest = new passswordBone();
         this.datetest = new dateBone();
+        this.booltest=new booleanBone();
 
     }
 

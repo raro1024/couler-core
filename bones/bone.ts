@@ -91,7 +91,7 @@ export class Bone {
     renderer(boneName, ) {
 
         return `
-        <label  for="${boneName}">${this.descr?this.descr:boneName}</label >
+        <label  for="${boneName}">${this.descr?this.descr:boneName}</label>
         <input  name="${boneName}" id="${boneName}" placeholder="${this.descr}" ${this.required?"required":""} ${this.readonly?"required":""}></input>
         `
 

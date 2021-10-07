@@ -69,6 +69,10 @@ export class Skeleton {
             }
         }
     }
+    /**
+     * 
+     * @returns Object of Bonedata {bonename:bonedata}
+     */
     readBones() {
         var bonevals = {}
         for (const [bonename, bone] of Object.entries(this)) {
@@ -91,7 +95,7 @@ export class Skeleton {
     toDB() {
         console.log("read bone before wirte")
         console.log(this.readBones())
-        db.put(this.kindname, this.readBones());
+        return db.put(this.kindname, this.readBones());
     }
 
     async fromDB(key) {
