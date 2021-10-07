@@ -44,6 +44,7 @@ import {
 import {
     booleanBone
 } from "../bones/booleanBone";
+import { selectBone } from "../bones/selectBone";
 
 class RefRefTest extends RefSkeleton {
     stringtestinRecord: stringBone;
@@ -57,14 +58,14 @@ class RefRefTest extends RefSkeleton {
 }
 class RefTest extends RefSkeleton {
     stringtestinRecord: stringBone;
-    recordtest: recordBone;
+    recordinRecordtest: recordBone;
     constructor() {
         super();
         this.stringtestinRecord = new stringBone({
             multiple: true
 
         });
-        this.recordtest = new recordBone({
+        this.recordinRecordtest = new recordBone({
             using: RefRefTest,
             parent: this
         });
@@ -81,17 +82,19 @@ class TestSkel extends Skeleton {
     datetest: dateBone;
     recordtest: recordBone;
     booltest: booleanBone;
+    selectTest:selectBone;
 
     constructor() {
         super();
 
         /*this.stringtest = new stringBone({
             multiple: true
-        });*/
+        });
         this.recordtest = new recordBone({
             using: RefTest,
             parent: this
-        });
+        });*/
+        this.selectTest=new selectBone({options:{"1":"eins","2":"zwei"},defaultValue:"2"})
         /*this.numtest = new numericBone({descr:"Ok num test"});
         this.passwordtest = new passswordBone();
         this.datetest = new dateBone();

@@ -1,18 +1,20 @@
 import * as express from "express";
 import * as decerators from "../decerators";
 import * as coremodules from "../modules/init";
-const modulesPath= "../../modules/init";
-var modules={};
+const modulesPath = "../../modules/init";
+var modules = {};
 try {
-    modules=require(modulesPath)
-}catch(e){}
+    modules = require(modulesPath)
+} catch (e) {}
 
 import {
     Error
 } from "../errors";
-import { nextTick } from "process";
+import {
+    nextTick
+} from "process";
 
-export const name="json" //name of The renderer
+export const name = "json" //name of The renderer
 export const router = express.Router();
 
 /**
@@ -24,11 +26,11 @@ router.use(express.urlencoded({
     extended: true
 }))
 router.use(express.json())
-router.use((req,res,next)=>{
-    req["handlername"]="json"; // Set the handler Namer
+router.use((req, res, next) => {
+    req["handlername"] = "json"; // Set the handler Namer
     next();
 })
-router.all(['/json/:module/:handler/:key', '/json/:module/:handler', '/json/:module/',"/json*"], (req, res) => {
+router.all(['/json/:module/:handler/:key', '/json/:module/:handler', '/json/:module/', "/json*"], (req, res) => {
     //Load Module
     var params = getParams(req);
     var module_: any = getModule(req);
@@ -70,7 +72,7 @@ router.all(['/json/:module/:handler/:key', '/json/:module/:handler', '/json/:mod
             break
         case "Function":
             try {
-                res.json( m_[handlername](params))
+                res.json(m_[handlername](params))
                 res.end()
             } catch (error) {
                 handleError(res, error)
@@ -85,21 +87,21 @@ function getParams(req) {
     const module = req.params.module;
     const handler = req.params.handler;
     const key = req.params.key;
-    var params={}
+    var params = {}
     if (module) {
         if (handler) {
             if (key) {
-                params["key"]=key;
+                params["key"] = key;
             }
             if (req.query !== undefined || Object.keys(req.query).length > 0) {
                 for (const [key_, val] of Object.entries(req.query)) {
-                    params[key_]=val;
+                    params[key_] = val;
                 }
-                
+
             }
             if (req.body !== undefined || Object.keys(req.body).length > 0) {
                 for (const [key_, val] of Object.entries(req.body)) {
-                    params[key_]=val;
+                    params[key_] = val;
                 }
             }
             return params;
@@ -108,14 +110,15 @@ function getParams(req) {
     }
     return
 }
+
 function getModule(req) {
 
     var requestmodule: string;
     console.log("req.params.module")
     console.log(req.params.module)
-    if (req.params.module === undefined||"") {
+    if (req.params.module === undefined || "") {
         console.log("set index");
-        
+
         requestmodule = "index";
     } else {
         requestmodule = req.params.module.toLocaleLowerCase();
@@ -153,8 +156,10 @@ function handleError(res, error) {
             break
     }
 }
-export async function render(data={})
-{
+export async function render(data = {}) {
+    console.log("in json ")
     return data;
 }
+
+
 export * as json from "./json";

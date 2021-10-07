@@ -35,6 +35,7 @@ export class List {
      * IF /:module/add is an GET Request we Render the add Template
      * IF /:module/add is an POST Request we write the data form the client to the Database
      * 
+     * Works on Skel Layer
      * @returns 
      */
     async add(skel, data) {
@@ -43,13 +44,18 @@ export class List {
             //Delete all Bones and Attributes that are not needed
             delete skel.kindname;
             for (const [bonename, bone] of Object.entries(skel)) {
-                if (typeof bone === "object") {
-                    if (!skel[bonename].visible) {
-                        delete skel[bonename]
+                if (bone) {
+                    if (typeof bone === "object") {
+                        if (!skel[bonename].visible) {
+                            delete skel[bonename]
+                        }
                     }
+                } else {
+                    delete skel[bonename]
                 }
             }
 
+            skel = this.unfoldSkel(skel)
             return this.render(this.addTemplate, skel)
         }
         //Prepare data before we wirting it to the bones
@@ -71,14 +77,9 @@ export class List {
      * Function must clear Password out of the object 
      */
     @exposed
-    async view(key) {
-        console.log("view key is " + key)
-        var userpromise;
-        if (key === "self") {
-            userpromise = utils.getCurrentUser().then(data => data);
-        } else {
-            return this.render(this.viewTemplate, await db.get(this.classname(), key));
-        }
+    async view(param) {
+        var skel = await db.get(this.classname(), param["key"])
+        return this.render(this.viewTemplate, skel);
     }
     /**
      *
@@ -124,22 +125,36 @@ export class List {
      * 
      */
     prepareData(data) {
-        console.log(data)
-        console.log(data)
-        
+
+
         var modifiedData = {}
         for (const [boneName, boneData] of Object.entries(data)) {
-            
+
             if (boneName.indexOf(":") == -1) {
                 objectPath.set(modifiedData, boneName, boneData)
-            }
-            else
-            {
+            } else {
                 objectPath.push(modifiedData, boneName.split(":")[0], boneData)
             }
         }
 
         return modifiedData;
-        
+
+    }
+    unfoldSkel(skel) {
+        var modifiedData = {}
+        for (const [boneName, boneArgs] of Object.entries(skel)) {
+
+            if (boneArgs) {
+                if (boneArgs.type == "record") {
+                    boneArgs.using = this.unfoldSkel(new boneArgs.using());
+                    modifiedData[boneName] = boneArgs;
+                } else {
+                    modifiedData[boneName] = boneArgs
+                }
+            }
+
+        }
+
+        return modifiedData;
     }
 }

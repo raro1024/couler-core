@@ -76,9 +76,9 @@ export class recordBone extends Bone {
     }
     renderer(boneName)
     {   
-        let usingSkel= new this.using();//Create instance of using skel
+        //let usingSkel= new this.using();//Create instance of using skel
         var innerBone=``
-        for (const [bonename_, bone] of Object.entries(usingSkel)) {
+        for (const [bonename_, bone] of Object.entries(this.using)) {
             if (typeof bone === "object") {
                 innerBone+=bone.renderer(boneName+"."+bonename_);
             }

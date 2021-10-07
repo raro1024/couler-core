@@ -52,12 +52,12 @@ export async function put(module, data) {
 
 export async function get(module, key={}, limit = 100) {
 
-
     var client = await dbconn;//await connectToDB();
     var db = client.db();
     var dataPromies = new Promise((resolve, reject) => {
 
         if (typeof key === "string") {
+            console.log("key is string")
             key = {
                 "_id": ObjectId(key)
             }
@@ -69,13 +69,17 @@ export async function get(module, key={}, limit = 100) {
             if (err) throw err;
             //client.close();
             if (res != null) {
+               
                 if(res.length==1)
                 {
-                    resolve(res[0])
+                    console.log(res)
+                    resolve(res[0]);
+
                 }
                 resolve(res);
                
             } else {
+                console.log("No Data")
                 reject();
             }
 
