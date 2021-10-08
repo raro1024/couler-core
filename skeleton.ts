@@ -18,10 +18,12 @@ import e = require("express");
 
 export class Skeleton {
     kindname: string;
+    key: stringBone;
     createdate: dateBone;
     changedate: dateBone;
     constructor(isRef = false) {
         if (!isRef) {
+            this.key=new stringBone()
             this.createdate = new dateBone({
                 defaultValue: Date.now(),
                 visible: false
@@ -93,8 +95,15 @@ export class Skeleton {
         return this[boneName].data = value;
     }
 
-    toDB() {
-        return db.put(this.kindname, this.readBones());
+    async toDB() {
+        var key = await db.put(this.kindname, this.readBones());
+       
+        if(key)
+        {
+            this.key.data=key;
+            return true;
+        }
+        return false;
     }
 
     async fromDB(key) {

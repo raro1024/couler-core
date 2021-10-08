@@ -14,6 +14,8 @@ import {
     json
 } from "../routes/json";
 import * as objectPath from "object-Path";
+import { Skeleton } from "../skeleton";
+import { Bone } from "../bones/bone";
 export class List {
     kindname: any;
     defaultTemplate: string = "index.hbs"
@@ -43,6 +45,7 @@ export class List {
         if (!utils.isPostRequest()) {
             //Delete all Bones and Attributes that are not needed
             delete skel.kindname;
+            delete skel.key;
             for (const [bonename, bone] of Object.entries(skel)) {
                 if (bone) {
                     if (typeof bone === "object") {
@@ -62,9 +65,10 @@ export class List {
 
         var modifiedData = this.prepareData(data);
         await skel.writeBones(modifiedData, true);
-        var key = await skel.toDB();
+        var success = await skel.toDB();
 
-        if (key) {
+        if (success) {
+            
             return this.render(this.addSuccessTemplate, skel.readBones())
         }
 
@@ -143,10 +147,10 @@ export class List {
         return modifiedData;
 
     }
-    unfoldSkel(skel) {
+    unfoldSkel(skel:Skeleton) {
+        console.log("unfold")
         var modifiedData = {}
         for (const [boneName, boneArgs] of Object.entries(skel)) {
-
             if (boneArgs) {
                 if (boneArgs.type == "record") {
                     boneArgs.using = this.unfoldSkel(new boneArgs.using());

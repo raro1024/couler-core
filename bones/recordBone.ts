@@ -17,7 +17,7 @@ import {
 export class recordBone extends Bone {
     using: typeof Skeleton;
     parent: typeof Skeleton;
-    declare _value: Skeleton;
+    declare _value: any;
     constructor({
         descr = undefined,
         multiple = false,
@@ -63,8 +63,7 @@ export class recordBone extends Bone {
         if (typeof _val === "string") {
             _val = JSON.parse(_val)
         }
-        console.log("_val")
-        console.log(_val)
+
         if (_val && typeof _val === "object") {
             if (this.multiple) {
                 this._value=[];

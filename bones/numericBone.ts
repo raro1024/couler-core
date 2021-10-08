@@ -21,7 +21,15 @@ export class numericBone extends Bone {
         this.type = "numeric";
     }
     set data(_val) {
-        super.data = parseFloat(_val);
+        if(_val)
+        {
+            super.data = parseFloat(_val);
+        }
+        else
+        {
+            super.data = _val;
+        }
+        
     }
     get data() {
         return super.data;

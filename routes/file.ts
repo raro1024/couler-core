@@ -19,7 +19,7 @@ const mode=conf["storage.mode"];
 const storagemodes={"local":storagelocal,"gridfs":storagegridfs}
 router.use(bodyParser.urlencoded({extended: true}))
 var upload = multer({ storage: storagemodes[mode]["storage"] })
-router.post('/file/upload', upload.single('myFile'), async (req, res, next) => {
+router.put('/file/upload', upload.single('file'), async (req, res, next) => {
 
     const file:any = req.file
     if (!file) {
@@ -53,6 +53,7 @@ router.post('/file/upload', upload.single('myFile'), async (req, res, next) => {
     res.send(obj)
 })
 router.get('/file/download/:key', async(req, res) => {
+    
     
     var filedata = (await db.get("file",req.params.key))[0]
     if(!filedata)

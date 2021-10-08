@@ -71,33 +71,11 @@ class RefTest extends RefSkeleton {
 
 class TestSkel extends Skeleton {
     kindname = "test"
-    name: stringBone;
-    stringtest: stringBone;
-    numtest: numericBone;
-    passwordtest: passswordBone;
-    datetest: dateBone;
-    recordtest: recordBone;
-    booltest: booleanBone;
-    selectTest:selectBone;
+    filetest: fileBone;
 
     constructor() {
         super();
-
-        /*this.stringtest = new stringBone({
-            multiple: true
-        });*/
-        this.recordtest = new recordBone({
-            using: RefTest,
-            parent: this,
-            multiple:true
-        });
-        //this.selectTest=new selectBone({options:{"1":"eins","2":"zwei"},defaultValue:"2"})
-        /*this.numtest = new numericBone({descr:"Ok num test"});
-        this.passwordtest = new passswordBone();
-        this.datetest = new dateBone();
-        this.booltest=new booleanBone();
-        */
-
+        this.filetest=new fileBone();
     }
 
 }
