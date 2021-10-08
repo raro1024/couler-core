@@ -15,29 +15,17 @@ export class fileBone extends Bone {
         super({descr: descr, multiple : multiple, defaultValue: defaultValue, required : required,unique:unique});
         this.type = "file";
     }
-    get data() {
-        return this._value;
-    }
-
-    set data(_val) {
-        console.log(_val)
-        if(_val==undefined)
-        {
-            throw "No Values In File Bone"
-        }
+    
+    convertData(_val)
+    {
         if (typeof _val === "string")
         {
-            _val=JSON.parse(_val)
+            return JSON.parse(_val)
         }
        
         if (_val && typeof _val === "object") {
-            this._value=_val
-        }
-        else
-        {
-            throw "No Value  or No  object in File Bone"
-        }
-
+           return _val
+        } 
     }
     renderer(boneName) {
         return `

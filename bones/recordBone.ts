@@ -76,8 +76,6 @@ export class recordBone extends Bone {
                        
                         
                     }
-                    console.log("set val")
-                    console.log(skel.readBones())
                     this._value.push(skel.readBones());
                     
                 }

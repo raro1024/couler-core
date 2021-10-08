@@ -63,17 +63,17 @@ export class Bone {
             if (this.multiple) {
                 if (utils.isArray(_val)) {
                     if (_val.length > 0) {
-                        this._value = _val;
+                        this._value = this.convertData(_val);
                     }
 
                 } else {
-                    this._value = [_val];
+                    this._value = [this.convertData(_val)];
                 }
             } else {
                 if (utils.isArray(_val)) {
-                    this.data = _val[0]
+                    this.data = this.convertData(_val[0])
                 } else {
-                    this._value = _val;
+                    this._value =  this.convertData(_val);
                 }
             }
 
@@ -87,6 +87,10 @@ export class Bone {
     set rawdata(_val) {
 
         this._value = _val;
+    }
+    convertData(_val)
+    {
+        return _val;
     }
     renderer(boneName, ) {
 

@@ -71,11 +71,15 @@ class RefTest extends RefSkeleton {
 
 class TestSkel extends Skeleton {
     kindname = "test"
-    filetest: fileBone;
+    datetest1: dateBone;
+    datetest2: dateBone;
+    datetest3: dateBone;
 
     constructor() {
         super();
-        this.filetest=new fileBone();
+        this.datetest1=new dateBone({});
+        this.datetest2=new dateBone({time:true});
+        this.datetest3=new dateBone({time:true,date:false});
     }
 
 }

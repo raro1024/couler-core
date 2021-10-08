@@ -73,6 +73,40 @@ export class List {
         }
 
     }
+    @exposed
+    async edit(skel, data) {
+
+        if (!utils.isPostRequest()) {
+            //Delete all Bones and Attributes that are not needed
+            delete skel.kindname;
+            delete skel.key;
+            for (const [bonename, bone] of Object.entries(skel)) {
+                if (bone) {
+                    if (typeof bone === "object") {
+                        if (!skel[bonename].visible) {
+                            delete skel[bonename]
+                        }
+                    }
+                } else {
+                    delete skel[bonename]
+                }
+            }
+
+            skel = this.unfoldSkel(skel)
+            return this.render(this.addTemplate, skel)
+        }
+        //Prepare data before we wirting it to the bones
+
+        var modifiedData = this.prepareData(data);
+        await skel.writeBones(modifiedData, true);
+        var success = await skel.toDB();
+
+        if (success) {
+            
+            return this.render(this.addSuccessTemplate, skel.readBones())
+        }
+
+    }
     /**
      * 
      * @param {string} key 
