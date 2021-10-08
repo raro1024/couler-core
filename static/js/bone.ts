@@ -5,11 +5,12 @@ document.addEventListener("DOMContentLoaded", () => init())
 
 function init() {
     document.querySelectorAll(".boneContainer").forEach((element) => {
-
+        console.log(element)
         if (element.getAttribute("data-multiple")) {
             var btn_copyelement = document.createElement("button");
             btn_copyelement.textContent = "+";
             btn_copyelement.id = "btn_copyelement";
+
             btn_copyelement.addEventListener("click", (event) => {
                 event.preventDefault();
                 clickEvent(event)
@@ -21,6 +22,25 @@ function init() {
 
         }
     });
+    document.querySelectorAll(".recordContainer").forEach((element) => {
+        console.log(element)
+        if (element.getAttribute("data-multiple")) {
+            var btn_copyelement = document.createElement("button");
+            btn_copyelement.textContent = "+";
+            btn_copyelement.id = "btn_copyelement";
+
+            btn_copyelement.addEventListener("click", (event) => {
+                event.preventDefault();
+                clickEventRecord(event)
+            });
+
+
+
+            element.appendChild(btn_copyelement);
+
+        }
+    });
+
 
 }
 
@@ -36,7 +56,11 @@ function clickEvent(event) {
     insertAfter(newelement, element);
     event.path[0].remove();
     newelement.querySelectorAll("input").forEach((inputElement) => {
-        inputElement.name = inputElement.name.split(":")[0] + ":" + (parseInt(inputElement.name.split(":")[1]) + 1) //VErstehe ich natürlich bald noch
+        console.log("new name")
+        var name =inputElement.name.split(".").slice(0,-1).join(".")+"."+(parseInt(inputElement.name.split(".").slice(-1))+1)
+        console.log(name)
+        
+        inputElement.name = name
     });
     newelement.querySelectorAll("#btn_copyelement").forEach((btn) => {
         btn.addEventListener("click", (event) => {
@@ -44,5 +68,34 @@ function clickEvent(event) {
             clickEvent(event)
         });
     });
+
+}
+function clickEventRecord(event) {
+    
+    event.preventDefault();
+    var element = event.path[1];
+    var newelement = element.cloneNode(true);
+    insertAfter(newelement, element);
+    event.path[0].remove();
+    newelement.querySelectorAll("input").forEach((inputElement) => {
+        var recNameOld= element.getAttribute("data-name");
+        var recName= element.getAttribute("data-name");
+        
+
+        recName =recName.split(".").slice(0,-1).join(".")+"."+(parseInt(recName.split(".").slice(-1))+1)
+        
+        inputElement.name = inputElement.name.replace(recNameOld,recName);
+    });
+    newelement.querySelectorAll("#btn_copyelement").forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+            event.preventDefault();
+            clickEventRecord(event)
+        });
+    });
+    var recName= newelement.getAttribute("data-name");
+    console.log("rec nmae")
+    console.log(recName)
+    recName=recName.split(".").slice(0,-1).join(".")+"."+(parseInt(recName.split(".").slice(-1))+1)
+    newelement.setAttribute("data-name",recName);
 
 }

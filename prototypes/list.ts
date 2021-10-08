@@ -126,17 +126,20 @@ export class List {
      */
     prepareData(data) {
 
-
+        console.log("data##")
+        console.log(JSON.stringify(data));
         var modifiedData = {}
         for (const [boneName, boneData] of Object.entries(data)) {
-
-            if (boneName.indexOf(":") == -1) {
+            //console.log(boneData)
+            //console.log(objectPath.has(modifiedData,boneName))
+            if (!objectPath.has(modifiedData,boneName)) {
                 objectPath.set(modifiedData, boneName, boneData)
             } else {
-                objectPath.push(modifiedData, boneName.split(":")[0], boneData)
+                objectPath.insert(modifiedData, boneName, boneData)
             }
         }
-
+        console.log("mod data");
+        console.log(JSON.stringify(modifiedData));
         return modifiedData;
 
     }

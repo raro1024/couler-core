@@ -65,10 +65,6 @@ class RefTest extends RefSkeleton {
             multiple: true
 
         });
-        this.recordinRecordtest = new recordBone({
-            using: RefRefTest,
-            parent: this
-        });
     }
 }
 
@@ -89,12 +85,13 @@ class TestSkel extends Skeleton {
 
         /*this.stringtest = new stringBone({
             multiple: true
-        });
+        });*/
         this.recordtest = new recordBone({
             using: RefTest,
-            parent: this
-        });*/
-        this.selectTest=new selectBone({options:{"1":"eins","2":"zwei"},defaultValue:"2"})
+            parent: this,
+            multiple:true
+        });
+        //this.selectTest=new selectBone({options:{"1":"eins","2":"zwei"},defaultValue:"2"})
         /*this.numtest = new numericBone({descr:"Ok num test"});
         this.passwordtest = new passswordBone();
         this.datetest = new dateBone();

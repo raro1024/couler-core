@@ -11,6 +11,7 @@ import {
 import {
     Error
 } from "./errors";
+import e = require("express");
 /**
  * Basic Skeleton class
  */
@@ -105,7 +106,7 @@ export class Skeleton {
 }
 export class RefSkeleton extends Skeleton {
     constructor() {
-        
+        console.log("is ref")
         super(true);
     }
     

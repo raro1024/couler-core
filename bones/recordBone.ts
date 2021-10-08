@@ -18,39 +18,42 @@ export class recordBone extends Bone {
     using: typeof Skeleton;
     parent: typeof Skeleton;
     declare _value: Skeleton;
-    constructor({descr=undefined, multiple = false, defaultValue= undefined, required = false,unique=false ,using=undefined,parent=undefined}={})
-    { 
-        super({descr: descr, multiple : multiple, defaultValue: defaultValue, required : required,unique:unique});
+    constructor({
+        descr = undefined,
+        multiple = false,
+        defaultValue = undefined,
+        required = false,
+        unique = false,
+        using = undefined,
+        parent = undefined
+    } = {}) {
+        super({
+            descr: descr,
+            multiple: multiple,
+            defaultValue: defaultValue,
+            required: required,
+            unique: unique
+        });
         this.using = using;
         this.type = "record";
-        if(!using)
-        {
+        if (!using) {
             throw "No Using set in Recordbone"
         }
-        if(!parent)
-        {
+        if (!parent) {
             throw "No Parnet set in Recordbone"
         }
 
-        if(parent.classname()===using.name.toLowerCase())
-        {
-            throw"Recordbone using is same Class as Parent "
+        if (parent.classname() === using.name.toLowerCase()) {
+            throw "Recordbone using is same Class as Parent "
         }
-        
-       
 
-        
+
+
+
     }
     get data() {
-        var bonevals = {}
+      return this._value;
 
-        for (const [bonename, bone] of Object.entries(this._value)) {
-            if (typeof bone === "object") {
-
-                bonevals[bonename] = bone.data;
-            }
-        }
-        return bonevals
     }
 
     set data(_val) {
@@ -60,34 +63,61 @@ export class recordBone extends Bone {
         if (typeof _val === "string") {
             _val = JSON.parse(_val)
         }
-
+        console.log("_val")
+        console.log(_val)
         if (_val && typeof _val === "object") {
-            var skel = new this.using()
-            for (const [bonename, bone] of Object.entries(skel)) {
-                if (typeof bone === "object") {
-                    bone.data = _val[bonename];
+            if (this.multiple) {
+                this._value=[];
+                for (let i = 0; i < _val.length; i++) {
+                    var skel = new this.using()
+                    for (const [bonename, bone] of Object.entries(skel)) {
+                        if (typeof bone === "object") {
+                            bone.data = _val[i][bonename];
+                        }
+                       
+                        
+                    }
+                    console.log("set val")
+                    console.log(skel.readBones())
+                    this._value.push(skel.readBones());
+                    
                 }
+            } else {
+                var skel = new this.using()
+                for (const [bonename, bone] of Object.entries(skel)) {
+                    if (typeof bone === "object") {
+                        bone.data = _val[bonename];
+                    }
+                }
+                
+                this._value = skel.readBones()
             }
-            this._value = skel
+
         } else {
             throw "No Value  or No  object in record Bone"
         }
+        console.log("end valie")
+        console.log(this._value)
 
     }
-    renderer(boneName)
-    {   
+    renderer(boneName) {
+
         //let usingSkel= new this.using();//Create instance of using skel
-        var innerBone=``
+        var innerBone = ``
         for (const [bonename_, bone] of Object.entries(this.using)) {
             if (typeof bone === "object") {
-                innerBone+=bone.renderer(boneName+"."+bonename_);
+
+                //console.log(boneName+"."+bonename_);
+                //console.log(boneName+(this.multiple?":0":"")+"."+bonename_);
+                let innerBoneName = boneName + (this.multiple ? ".0" : "") + "." + bonename_
+                innerBone += bone.renderer(innerBoneName);
             }
         }
-        return`
+        return `
         
-        <div>
+        <div id="${boneName}" data-multiple="${this.multiple?true:false}" data-name="${boneName + (this.multiple ? ".0" : "")}" class="recordContainer">
             ${innerBone}
-        <div>
+        </div>
         `
     }
 
