@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head> 
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="/static/js/bone.js"></script>
+        <link rel="stylesheet" href="/static/css/style.css" ></link>
+    </head>
+    <body>
+        <h3>ADD</h3>
+        <form method="POST">
+        {{#each skel}}
+            {{{renderBone @key this}}}
+            <br>
+
+        {{/each}}
+        <button type="submit">Senden</button>
+        </form>
+
+    </body>
+</html>

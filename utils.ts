@@ -7,6 +7,12 @@
 import {db} from "./db";
 import { html } from "./routes/html";
 import { json } from "./routes/json";
+import * as coremodules from "./modules/init";
+const modulesPath= "../modules/init";
+var modules={};
+try {
+    modules=require(modulesPath)
+}catch(e){}
 
  export function getSessionKey()
 {
@@ -82,4 +88,18 @@ export function isEmpty(obj)
 export function isArray (a) {
     return (!!a) && (a.constructor === Array);
 };
+export function getCurrentModuleName()
+{
+    var requestmoduleName: string;
+    const req =require("./index")();
+    
+    if (req.params.module === undefined || "") {
+
+        requestmoduleName = "index";
+    } else {
+        requestmoduleName = req.params.module.toLocaleLowerCase();
+    }
+    return requestmoduleName;
+
+}
 export * as utils from "./utils";

@@ -55,6 +55,10 @@ export class Bone {
     //Here is how it works :] https://imgur.com/a/QgaQ8xg ?? 
     set data(_val) {
         if (_val == undefined) {
+            if(this._value)
+            {
+                return
+            }
             if (this.defaultValue) {
                 this.data = this.defaultValue
             }

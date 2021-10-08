@@ -71,15 +71,12 @@ class RefTest extends RefSkeleton {
 
 class TestSkel extends Skeleton {
     kindname = "test"
-    datetest1: dateBone;
-    datetest2: dateBone;
-    datetest3: dateBone;
+    edittest: stringBone;
+
 
     constructor() {
         super();
-        this.datetest1=new dateBone({});
-        this.datetest2=new dateBone({time:true});
-        this.datetest3=new dateBone({time:true,date:false});
+        this.edittest=new stringBone();
     }
 
 }
@@ -92,8 +89,17 @@ export class Test extends List {
         console.log("IN ADD OF TEST")
         return super.add(this.addSkel(), data);
     }
+    @exposed
+    async edit(data) {
+        return super.edit(this.editSkel(),data);
+    }
+
+
     //Create an Instace off the Skel
     addSkel() {
+        return new TestSkel();
+    }
+    editSkel() {
         return new TestSkel();
     }
 

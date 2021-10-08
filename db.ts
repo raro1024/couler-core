@@ -49,6 +49,26 @@ export async function put(module, data) {
     return keyPromies
 
 }
+export async function update(module, data,key) {
+    key = {
+        "_id": ObjectId(key)
+    }
+    var client = await connectToDB();
+    var db = client.db();
+    var successPromies = new Promise((resolve, reject) => {
+        db.collection(module).updateOne(key,{ $set:data}, function (err, res) {
+            if (err)
+            {
+                resolve(false);
+            }
+            client.close();
+            resolve(true);
+            
+        });
+    });
+    return successPromies
+
+}
 
 export async function get(module, key={}, limit = 100) {
 

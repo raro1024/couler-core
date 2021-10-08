@@ -46,6 +46,7 @@ export class Skeleton {
 
         console.log("Fill bones with Data from DB or reqest")
         console.log(requestdata)
+        console.log(this)
         for (const [bonename, bone] of Object.entries(this)) {
             if (typeof bone === "object") {
                 if (fromClient) {
@@ -96,18 +97,29 @@ export class Skeleton {
     }
 
     async toDB() {
-        var key = await db.put(this.kindname, this.readBones());
-       
-        if(key)
+        if (this.key.data)// edit
         {
-            this.key.data=key;
-            return true;
+            this.changedate.data=new Date();// Overwirte Change date
+
+            return await db.update(this.kindname, this.readBones(),this.key.data);
+            
         }
-        return false;
+        else // add
+        {
+            var key = await db.put(this.kindname, this.readBones());
+            if(key)
+    
+            {
+                this.key.data=key;
+                return true;
+            }
+            return false;
+        }
+       
     }
 
     async fromDB(key) {
-
+        this.writeBones(await db.get(this.kindname,key));
     }
     classname(_class = this) {
         return _class.constructor.name.toLowerCase();

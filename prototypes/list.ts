@@ -14,8 +14,12 @@ import {
     json
 } from "../routes/json";
 import * as objectPath from "object-Path";
-import { Skeleton } from "../skeleton";
-import { Bone } from "../bones/bone";
+import {
+    Skeleton
+} from "../skeleton";
+import {
+    Bone
+} from "../bones/bone";
 export class List {
     kindname: any;
     defaultTemplate: string = "index.hbs"
@@ -24,6 +28,9 @@ export class List {
 
     addTemplate: string = "add.hbs"
     addSuccessTemplate: string = "addSuccess.hbs"
+
+    editTemplate: string = "edit.hbs"
+    editSuccessTemplate: string = "editSuccess.hbs"
     constructor() {
 
     }
@@ -68,16 +75,16 @@ export class List {
         var success = await skel.toDB();
 
         if (success) {
-            
+
             return this.render(this.addSuccessTemplate, skel.readBones())
         }
 
     }
     @exposed
-    async edit(skel, data) {
-
+    async edit(skel,data) {
+        const key =data.key;
         if (!utils.isPostRequest()) {
-            //Delete all Bones and Attributes that are not needed
+            await skel.fromDB(key);
             delete skel.kindname;
             delete skel.key;
             for (const [bonename, bone] of Object.entries(skel)) {
@@ -91,19 +98,18 @@ export class List {
                     delete skel[bonename]
                 }
             }
-
-            skel = this.unfoldSkel(skel)
-            return this.render(this.addTemplate, skel)
+            return this.render(this.editTemplate, skel)
         }
+        
         //Prepare data before we wirting it to the bones
-
         var modifiedData = this.prepareData(data);
+        await skel.fromDB(key);
         await skel.writeBones(modifiedData, true);
         var success = await skel.toDB();
-
+        console.log("is "+success)
         if (success) {
-            
-            return this.render(this.addSuccessTemplate, skel.readBones())
+
+            return this.render(this.editSuccessTemplate, skel.readBones())
         }
 
     }
@@ -170,7 +176,7 @@ export class List {
         for (const [boneName, boneData] of Object.entries(data)) {
             //console.log(boneData)
             //console.log(objectPath.has(modifiedData,boneName))
-            if (!objectPath.has(modifiedData,boneName)) {
+            if (!objectPath.has(modifiedData, boneName)) {
                 objectPath.set(modifiedData, boneName, boneData)
             } else {
                 objectPath.insert(modifiedData, boneName, boneData)
@@ -181,7 +187,7 @@ export class List {
         return modifiedData;
 
     }
-    unfoldSkel(skel:Skeleton) {
+    unfoldSkel(skel: Skeleton) {
         console.log("unfold")
         var modifiedData = {}
         for (const [boneName, boneArgs] of Object.entries(skel)) {
