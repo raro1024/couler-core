@@ -45,8 +45,7 @@ export class Skeleton {
     async writeBones(requestdata, fromClient = false) {
 
         console.log("Fill bones with Data from DB or reqest")
-        console.log(requestdata)
-        console.log(this)
+
         for (const [bonename, bone] of Object.entries(this)) {
             if (typeof bone === "object") {
                 if (fromClient) {

@@ -57,7 +57,7 @@ export function isPostRequest()
     console.log(getRequestData()["method"])
     return getRequestData()["method"]==="POST"
 }
-export function randomString(length:number=10) // THX https://stackoverflow.com/a/1349426
+export function randomString(length:number=20) // THX https://stackoverflow.com/a/1349426
 {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

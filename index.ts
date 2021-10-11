@@ -9,8 +9,9 @@ import * as jsonhandler from "./routes/json";
 import * as htmlhandler from "./routes/html";
 import * as filehandler from "./routes/file";
 import * as exphbs from 'express-handlebars';
-import * as bones from "./bones/init"
+import { getstartUpTasks } from "./decerators";
 
+const t0 = Date.now();
 var request;
 
 let port = 8080;
@@ -45,11 +46,11 @@ app.use(jsonhandler.router);
 app.use(htmlhandler.router);
 
 
-// Access the session as req.session
-
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
+    const t1 = Date.now();
+    console.log(`Up in ${t1 - t0} milliseconds.`);
 });
-
+// Access the session as req.session
 module.exports=function getRequestData(){return request;};

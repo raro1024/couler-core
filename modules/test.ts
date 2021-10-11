@@ -2,6 +2,7 @@ import {
     Skeleton,
     RefSkeleton
 } from "../skeleton";
+import * as seckey from "../seckey"
 import {
     List
 } from "../prototypes/list";
@@ -12,7 +13,7 @@ import {
     utils
 } from "../utils";
 import {
-    exposed
+    exposed, startUpTask
 } from "../decerators";
 import {
     Error
@@ -86,12 +87,21 @@ export class Test extends List {
     }
     @exposed
     async add(data) {
-        console.log("IN ADD OF TEST")
         return super.add(this.addSkel(), data);
     }
     @exposed
     async edit(data) {
         return super.edit(this.editSkel(),data);
+    }
+    @exposed
+    test()
+    {
+        return seckey.getKey();
+    }
+    @exposed
+    test2({secKey})
+    {
+        return seckey.validateKey(secKey);
     }
 
 

@@ -29,9 +29,6 @@ export async  function connectToDB(_url = undefined, dbName = "main") {
 }
 
 export async function put(module, data) {
-    console.log("Wirte Data to DB")
-    console.log(module)
-    console.log(data)
     var client = await connectToDB();
     var db = client.db();
     var keyPromies = new Promise((resolve, reject) => {
@@ -88,11 +85,10 @@ export async function get(module, key={}, limit = 100) {
         db.collection(module).find(key).limit(limit).toArray(function (err, res) {
             if (err) throw err;
             //client.close();
-            if (res != null) {
+            if (res != null  && res.length >0) {
                
                 if(res.length==1)
                 {
-                    console.log(res)
                     resolve(res[0]);
 
                 }
