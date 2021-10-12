@@ -30,7 +30,10 @@ app.engine('.hbs', exphbs({
     }
 }));
 app.set('view engine', '.hbs');
-
+getstartUpTasks().forEach(element => {
+    console.log(element)
+    element[0][element[1]]();
+});
 
 app.all("*",function(req, res,next) 
 {

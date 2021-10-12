@@ -4,9 +4,9 @@ import {
 import {
     utils
 } from "./utils";
-
+var  query:any;
 /**
- * this Class handel all db write and read stuff with mongodb 
+ * this Class handle all db write and read stuff with mongodb 
  * Standart db is main
  */
 const MongoClient = require('mongodb').MongoClient;
@@ -16,14 +16,14 @@ const username = "myUserAdmin";
 const password = "abc123";
 const url = "127.0.0.1";
 //const port=27017;
-const dbconn=connectToDB().then(conn=>conn);
-export async  function connectToDB(_url = undefined, dbName = "main") {
+const dbconn = connectToDB().then(conn => conn);
+export async function connectToDB(_url = undefined, dbName = "main") {
     // Replace the uri string with your MongoDB deployment's connection string.
     //const uri =`mongodb://${username}:${password}@${url}?retryWrites=true&writeConcern=majority`; // For local tests
-    var url = _url || 'mongodb://localhost:27017/'+dbName;
+    var url = _url || 'mongodb://localhost:27017/' + dbName;
     console.log(url)
     //const client = new MongoClient(uri);
-    return  MongoClient.connect(url)
+    return MongoClient.connect(url)
 
 
 }
@@ -33,69 +33,90 @@ export async function put(module, data) {
     var db = client.db();
     var keyPromies = new Promise((resolve, reject) => {
         db.collection(module).insertOne(data, function (err, res) {
-            if (err)
-            {
+            if (err) {
                 reject();
             }
             client.close();
             resolve(res["insertedId"]);
-            
-            
+
+
         });
     });
     return keyPromies
 
 }
-export async function update(module, data,key) {
+export async function update(module, data, key) {
     key = {
         "_id": ObjectId(key)
     }
     var client = await connectToDB();
     var db = client.db();
     var successPromies = new Promise((resolve, reject) => {
-        db.collection(module).updateOne(key,{ $set:data}, function (err, res) {
-            if (err)
-            {
+        db.collection(module).updateOne(key, {
+            $set: data
+        }, function (err, res) {
+            if (err) {
                 resolve(false);
             }
             client.close();
             resolve(true);
-            
+
+        });
+    });
+    return successPromies
+
+}
+export async function _delete(module, query) {
+    if (typeof query == "string")
+    {
+        query = {
+            "_id": ObjectId(query)
+        }
+    }
+    
+    var client = await connectToDB();
+    var db = client.db();
+    var successPromies = new Promise((resolve, reject) => {
+        db.collection(module).deleteOne(query, function (err, res) {
+            if (err) {
+                resolve(false);
+            }
+            client.close();
+            resolve(true);
+
         });
     });
     return successPromies
 
 }
 
-export async function get(module, key={}, limit = 100) {
+export async function get(module, query = {}, limit = 100) {
 
-    var client = await dbconn;//await connectToDB();
+    var client = await dbconn; //await connectToDB();
     var db = client.db();
     var dataPromies = new Promise((resolve, reject) => {
 
-        if (typeof key === "string") {
+        if (typeof query === "string") {
             console.log("key is string")
-            key = {
-                "_id": ObjectId(key)
+            query = {
+                "_id": ObjectId(query)
             }
         }
-        if (utils.isEmpty(key)) {
-            console.log("KEY ERR")
+        if (utils.isEmpty(query)) {
+            console.log("query ERR")
         }
-        db.collection(module).find(key).limit(limit).toArray(function (err, res) {
+        db.collection(module).find(query).limit(limit).toArray(function (err, res) {
             if (err) throw err;
             //client.close();
-            if (res != null  && res.length >0) {
-               
-                if(res.length==1)
-                {
+            if (res != null && res.length > 0) {
+
+                if (res.length == 1) {
                     resolve(res[0]);
 
                 }
                 resolve(res);
-               
+
             } else {
-                console.log("No Data")
                 reject();
             }
 
@@ -106,6 +127,7 @@ export async function get(module, key={}, limit = 100) {
     return dataPromies;
 
 }
+
 /**
  * Creates an new Database only if first Startup
  */

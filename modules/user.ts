@@ -3,7 +3,7 @@ import {Skeleton} from "../skeleton";
 import { List } from "../prototypes/list";
 import {db} from "../db";
 import {utils} from "../utils";
-import {exposed} from "../decerators";
+import {exposed, startUpTask} from "../decerators";
 import {Error} from "../errors";
 import { stringBone } from "../bones/stringBone";
 import { passswordBone } from "../bones/passwordBone";
@@ -83,11 +83,5 @@ export class User extends List
     loginSkel()
     {
         return new UserSkel();
-    }
-    
-    test()
-    {
-        console.log("Fuck in")
-        return "Fuck have access"
     }
 }

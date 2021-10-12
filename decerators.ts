@@ -13,6 +13,7 @@ export function isExposed<T>(instance: T, propertyKey: string) {
 export function startUpTask(target, propertyKey) {
   
   Reflect.defineMetadata(startUpTaskKey, true, target, propertyKey);
+  tasks.push([target,propertyKey])
 }
 
 export function getstartUpTasks() {
