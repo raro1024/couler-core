@@ -1,3 +1,4 @@
+import { json } from "./routes/json";
 import { utils } from "./utils";
 
 /**
@@ -23,18 +24,26 @@ export class Error
     }
     notFound()
     {
-        return [404,this.value];
-        
+        console.log( utils.getCurrentRenderName())
+        return this.render("errors/notFound.hbs",404); 
     }
     for()
     {
         return [404,this.value];
         
     }
-    send(statusCode,msg,res)
-    {
-        res.writeHead(statusCode)
-        res.end(msg)
+    render(template = "",statuscode=200, data={}) {
+
+        let renderer = utils.getCurrentRender();
+        switch (utils.getCurrentRenderName()) {
+            case "json":
+                return renderer.render(data)
+            case "html":
+                return [template, data,statuscode]
+            default:
+                return json.render(data)
+        }
     }
+    
     
 }

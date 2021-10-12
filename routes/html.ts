@@ -1,11 +1,11 @@
 import * as express from "express";
 import * as decerators from "../decerators";
 import * as coremodules from "../modules/init";
-const modulesPath= "../../modules/init";
-var modules={};
+const modulesPath = "../../modules/init";
+var modules = {};
 try {
-    modules=require(modulesPath)
-}catch(e){}
+    modules = require(modulesPath)
+} catch (e) {}
 
 
 import {
@@ -70,32 +70,55 @@ router.all(['/:module/:handler/:key', '/:module/:handler', '/:module/', "*"], (r
         case "AsyncFunction":
             m_[handlername](params).then((data) => {
                 console.log("now send template")
-                if(data)
-                {
-                    const template =data[0];
-                    const skel =data[1];
-                    render(template, skel, res)
+                if (data) {
+                    const template = data[0];
+                    const skel = data[1];
+                    const statusCode = 200;
+                    if (data.length > 2) {
+                        const statusCode = data[2];
+                    }
+
+                    render({
+                        template,
+                        skel,
+                        statusCode,
+                        res
+                    })
+                } else {
+                    render({
+                        template: "index.hbs",
+                        res: res
+                    });
                 }
-                else
-                {
-                    render(m_.defaultTemplate,{},res)
-                }
-               
+
 
             }).catch((error) => {
                 console.log("!!!ERR!!!")
                 console.log(error)
-                handleError(res, error);
+                const template = error[0];
+                const skel = error[1];
+                const statusCode = error[2];
+                render({
+                    template,
+                    skel,
+                    statusCode,
+                    res
+                })
 
             });
             break
         case "Function":
             try {
                 let [template, skel] = m_[handlername](params)
-                render(template, skel, res)
+                render({
+                    template,
+                    skel,
+                    res: res
+                })
 
             } catch (error) {
-                handleError(res, error);
+                console.log(error)
+                //handleError(res, error);
             }
             res.end(m_[req.params.handler](params).toString())
             break
@@ -107,21 +130,21 @@ function getParams(req) {
     const module = req.params.module;
     const handler = req.params.handler;
     const key = req.params.key;
-    var params={}
+    var params = {}
     if (module) {
         if (handler) {
             if (key) {
-                params["key"]=key;
+                params["key"] = key;
             }
             if (req.query !== undefined || Object.keys(req.query).length > 0) {
                 for (const [key_, val] of Object.entries(req.query)) {
-                    params[key_]=val;
+                    params[key_] = val;
                 }
-                
+
             }
             if (req.body !== undefined || Object.keys(req.body).length > 0) {
                 for (const [key_, val] of Object.entries(req.body)) {
-                    params[key_]=val;
+                    params[key_] = val;
                 }
             }
             return params;
@@ -157,24 +180,13 @@ function getModule(req) {
 
 }
 
-function handleError(res, error) {
-    switch (typeof error) {
-        case "function": // Errors Function
-            var errorData = error()
-            res.status(errorData[0])
-            res.end(errorData[1])
-            break;
-        case "object": //JSON Err msg
-            res.json(error)
-            res.end()
-            break;
-        default:
-            res.end(error.toString());
-            break
-    }
-}
-
-function render(template, skel = {}, res) {
+function render({
+    template = "index.hbs",
+    skel = {},
+    statusCode = 200,
+    res = null
+} = {}) {
+    res.statusCode = statusCode;
     if (!template) {
         res.send("no template ")
     }

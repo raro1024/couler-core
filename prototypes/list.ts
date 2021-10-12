@@ -20,6 +20,7 @@ import {
 import {
     Bone
 } from "../bones/bone";
+import { Error } from "../errors";
 export class List {
     kindname: any;
     defaultTemplate: string = "index.hbs"
@@ -122,8 +123,16 @@ export class List {
      */
     @exposed
     async view(param) {
+        if(param["key"])
+        {
         var skel = await db.get(this.classname(), param["key"])
         return this.render(this.viewTemplate, skel);
+        }
+        else
+        {
+            console.log("no key in view")
+            throw new Error().notFound();
+        }
     }
     /**
      *
