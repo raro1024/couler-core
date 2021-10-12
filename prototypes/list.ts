@@ -140,7 +140,7 @@ export class List {
      * @param data 
      * @param template If html the Site to render
      */
-    render(template = this.listTemplate, skel) {
+    render(template = this.listTemplate, skel={}) {
 
         let renderer = utils.getCurrentRender();
         switch (utils.getCurrentRenderName()) {

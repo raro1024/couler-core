@@ -66,7 +66,7 @@ export async function update(module, data, key) {
     return successPromies
 
 }
-export async function _delete(module, query) {
+export async function remove(module, query) {
     if (typeof query == "string")
     {
         query = {
@@ -106,7 +106,10 @@ export async function get(module, query = {}, limit = 100) {
             console.log("query ERR")
         }
         db.collection(module).find(query).limit(limit).toArray(function (err, res) {
-            if (err) throw err;
+            if (err)
+            {
+                reject();
+            }
             //client.close();
             if (res != null && res.length > 0) {
 
@@ -117,7 +120,7 @@ export async function get(module, query = {}, limit = 100) {
                 resolve(res);
 
             } else {
-                reject();
+                resolve(null);
             }
 
         });

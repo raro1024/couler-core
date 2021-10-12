@@ -50,13 +50,19 @@ export class Bone {
     }
 
     get data() {
+        if(!this._value)
+        {
+            if(this.defaultValue)
+            {
+                return this.defaultValue;
+            }
+        }
         return this._value;
     }
     //Here is how it works :] https://imgur.com/a/QgaQ8xg ?? 
     set data(_val) {
         if (_val == undefined) {
-            if(this._value)
-            {
+            if (this._value) {
                 return
             }
             if (this.defaultValue) {
@@ -77,7 +83,7 @@ export class Bone {
                 if (utils.isArray(_val)) {
                     this.data = this.convertData(_val[0])
                 } else {
-                    this._value =  this.convertData(_val);
+                    this._value = this.convertData(_val);
                 }
             }
 
@@ -92,8 +98,7 @@ export class Bone {
 
         this._value = _val;
     }
-    convertData(_val)
-    {
+    convertData(_val) {
         return _val;
     }
     renderer(boneName, ) {

@@ -23,15 +23,15 @@ export async function validateKey(secKey) {
     const data = await db.get("exnode-seckey", {"secKey":secKey});
     if(data)
     {
-        //db.delete
+        db.remove("exnode-seckey", {"secKey":secKey});
         return data["expiryDate"]>Date.now();
     }
     else{
-        console.log("is not valid")
+        db.remove("exnode-seckey", {"secKey":secKey});
         return false;
     }
     
 }
-export function deleteKey() {
-
+export function deleteKey(secKey) {
+    db.remove("exnode-seckey", {"secKey":secKey});
 }

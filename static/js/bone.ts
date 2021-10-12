@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => init())
 
 function init() {
     document.querySelectorAll(".boneContainer").forEach((element) => {
-        console.log(element)
         if (element.getAttribute("data-multiple") === "true") {
             var btn_copyelement = document.createElement("button");
             btn_copyelement.textContent = "+";

@@ -12,6 +12,7 @@ import {
     Error
 } from "./errors";
 import e = require("express");
+import { Bone } from "./bones/bone";
 /**
  * Basic Skeleton class
  */
@@ -23,7 +24,7 @@ export class Skeleton {
     changedate: dateBone;
     constructor(isRef = false) {
         if (!isRef) {
-            this.key=new stringBone()
+            this.key = new stringBone()
             this.createdate = new dateBone({
                 defaultValue: Date.now(),
                 visible: false
@@ -96,29 +97,45 @@ export class Skeleton {
     }
 
     async toDB() {
-        if (this.key.data)// edit
-        {
-            this.changedate.data=new Date();// Overwirte Change date
+        //Check for unique Value
+        for (const [bonename, bone] of Object.entries(this)) {
+            if (typeof bone === "object") {
 
-            return await db.update(this.kindname, this.readBones(),this.key.data);
-            
+                if (bone.unique) //We must check if a Skeleton Bone  with this value exist
+                {
+                    if(await db.get(this.kindname,{String(bonename):bone.data},1))
+                    {
+
+                        throw "Uniqe Value Exist in Databse"
+                    }
+
+                }
+
+            }
         }
-        else // add
+        if (this.key.data) // edit
         {
+            this.changedate.data = new Date(); // Overwirte Change date
+
+            return await db.update(this.kindname, this.readBones(), this.key.data);
+
+        } else // add
+        {
+
             var key = await db.put(this.kindname, this.readBones());
-            if(key)
-    
+            if (key)
+
             {
-                this.key.data=key;
+                this.key.data = key;
                 return true;
             }
             return false;
         }
-       
+
     }
 
     async fromDB(key) {
-        this.writeBones(await db.get(this.kindname,key));
+        this.writeBones(await db.get(this.kindname, key));
     }
     classname(_class = this) {
         return _class.constructor.name.toLowerCase();
@@ -129,5 +146,5 @@ export class RefSkeleton extends Skeleton {
         console.log("is ref")
         super(true);
     }
-    
+
 }
