@@ -35,9 +35,16 @@ export class numericBone extends Bone {
         return super.data;
     }
     renderer(boneName) {
-        return `
-        <label  for="${boneName}">${this.descr?this.descr:boneName}</label >
-        <input  type="number" name="${boneName}" id="${boneName}" placeholder="${this.descr}" ${this.required?"required":""} ${this.readonly?"required":""}></input>
-        `
+        let bone=super.renderer(boneName);
+        bone.childNodes.forEach(node => {
+            console.log(node)
+            if(node.tagName=="input")
+            {
+                node["type"]="number";
+            }
+        });
+        
+        return bone.outerHTML;
+       
     }
 }

@@ -18,7 +18,9 @@ import {
 import {
     utils
 } from "./utils";
-
+import * as initSkelton from"./skeletons/init";
+import * as objectPath from "object-Path";
+import { conf } from "./conf";
 const t0 = Date.now();
 var request;
 
@@ -31,6 +33,7 @@ app.engine('.hbs', exphbs({
             return JSON.stringify(object)
         },
         "renderBone": function (boneName, bone) {
+            
             if (bone) {
                 return bone.renderer(boneName)
             }
@@ -59,15 +62,17 @@ app.all("*", (req, res, next) => {
 
     request = req;
 
-    if (req._parsedUrl._raw !== "/favicon.ico") {
+    if (request._parsedUrl._raw !== "/favicon.ico") {
         next();
-    }
-    else
-    {
+    } else {
         res.end("404");
     }
 
 });
+for (const [skelName, skel] of Object.entries(initSkelton)) {
+
+    objectPath.set(conf,"skeletons."+new skel().kindname,skel)
+}
 app.use('/static', express.static('static'));
 
 app.use(filehandler.router)

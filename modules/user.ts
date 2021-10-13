@@ -24,27 +24,6 @@ import {
     passswordBone
 } from "../bones/passwordBone";
 
-
-
-class UserSkel extends Skeleton {
-    kindname = "user"
-    name: stringBone;
-    password: passswordBone;
-    access: stringBone;
-
-    constructor() {
-        super();
-        this.name = new stringBone({
-            required: true,
-            unique: true
-        });
-        this.password = new passswordBone();
-        this.access = new stringBone({
-            multiple: true
-        });
-    }
-
-}
 export class User extends List {
     kindname = "user" //For Routing and DB Shit
     loginTemplate: string = "user_login.hbs"
@@ -79,65 +58,63 @@ export class User extends List {
         var skel = this.loginSkel();
         await db.get("user", {
             "name": data["name"]
-             },1).then(userdata => {
-            if(userdata)
-            {               
+        }, 1).then(userdata => {
+            if (userdata) {
                 console.log(skel);
                 console.log(userdata);
 
                 skel.writeBones(userdata)
-            }
-            else
-            {
+            } else {
                 throw new Error().notFound();
             }
-           
+
         }).catch(() => {
             throw new Error().notFound();
         });
-        if(skel.password.check(data["password"]))
-        {
+        if (skel.password.check(data["password"])) {
             console.log("login success")
             utils.setUserSession(skel.key.data);
-            return this.render(this.loginSuccessTemplate,skel.readBones())
+            return this.render(this.loginSuccessTemplate, skel.readBones())
         }
 
     }
     @exposed
-    async view({key})
-    {
+    async view({key}) {
 
 
+        if (key === "self") {
+            const user = await utils.getCurrentUser();
+            if (user) {
+                //this.addSkel();
+                var skel:Skeleton = this.viewSkel();
+                await skel.fromDB(user.key);
+                return this.render(this.viewTemplate,skel)
+            } else {
+                throw new Error().unauthorized();
+            }
+
+        }
+    }
+    @exposed
+    async add({skelData}) {
+        return super.add(this.addSkel(), skelData);
+    }
+    @exposed
+    async edit({key,skelData}) {
         if(key==="self")
         {
-            const user =await utils.getCurrentUser()
-        
-            
-            if (user)
+            let user =await utils.getCurrentUser();
+            if(user)
             {
-                this.viewSkel()
-                return this.render(this.viewTemplate,user)
+                key= user["key"]
             }
             else
             {
                 throw new Error().unauthorized();
             }
-               
         }
-    }
-    @exposed
-    async add(data) {
-        console.log("add")
-        console.log(data)
-        return super.add(this.addSkel(), data);
-    }
 
-    //Create an Instace off the Skel
-    addSkel() {
-        return new UserSkel();
-    }
-    loginSkel() {
-        return new UserSkel();
+        return super.edit(this.editSkel(),key,skelData);
     }
     @startUpTask
     async createFirstUser() {
@@ -157,5 +134,25 @@ export class User extends List {
                 console.log("User can not be created")
             });
         }
+    }
+    /**
+     * Ensure that the password is deletet before we render the Skeleton
+     * @returns A Seleton with bones = null
+     */
+    viewSkel()
+    {
+        let skel =super.viewSkel();
+        delete skel.password;
+        return skel;
+    }
+    /**
+     * Ensure that the password is deletet before we render the Skeleton
+     * @returns A Seleton with bones
+     */
+    editSkel()
+    {
+        let skel =super.editSkel();
+        delete skel.password;
+        return skel;
     }
 }

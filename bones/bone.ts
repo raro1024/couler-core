@@ -1,4 +1,5 @@
-import e = require("express");
+import { document } from 'html-element';
+
 import {
     utils
 } from "../utils";
@@ -101,12 +102,53 @@ export class Bone {
     convertData(_val) {
         return _val;
     }
-    renderer(boneName, ) {
+    renderer(boneName) {
+        let outerBone=document.createElement("div");
+        if(this.multiple && this._value)
+        {
+            var boneArr=[];
+            for(let i =0;i<this._value.length;i++)
+            {
+                outerBone.appendChild(this.createBone(boneName,i));
+            }
+        }
+        else
+        {
+            outerBone.appendChild(this.createBone(boneName));
+           
+        }
+        return outerBone;
+       
+    }
+    createBone(boneName,i=0)
+    {
+        
+        let container=document.createElement("div");
+        container["class"]="boneContainer";
+        container.setAttribute("data-multiple",`${this.multiple?true:false}`);
+        //Create Label
+        let inputLabel=document.createElement("label");
+        inputLabel["for"]="id";
+        inputLabel["id"]=boneName+"-label";
+        inputLabel.textContent=this.descr?this.descr:boneName;
+        container.appendChild(inputLabel);
+        //Create input
+        let input=document.createElement("input");
+        input["id"]=boneName;
+        input["name"]=boneName+(this.multiple?"."+i:"");
 
-        return `
-        <label  for="${boneName}">${this.descr?this.descr:boneName}</label>
-        <input  name="${boneName}" id="${boneName}" placeholder="${this.descr}" ${this.required?"required":""} ${this.readonly?"required":""}></input>
-        `
+        input["placeholder"]=this.descr;
+        if(this.required)
+        {
+            input["required"]=true;
+        }
+
+        if(this._value)
+        {
+            input["value"]=this.data[i];
+        }
+        container.appendChild(input);
+        return container;
 
     }
 

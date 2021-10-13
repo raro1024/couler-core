@@ -1,0 +1,37 @@
+import { numericBone } from "../bones/numericBone";
+import { recordBone } from "../bones/recordBone";
+import { stringBone } from "../bones/stringBone";
+import { RefSkeleton, Skeleton } from "../skeleton";
+
+class RefRefTest extends RefSkeleton {
+    stringtestinRecord: stringBone;
+    constructor() {
+        super();
+        this.stringtestinRecord = new stringBone({
+            multiple: true
+
+        });
+    }
+}
+class RefTest extends RefSkeleton {
+    stringtestinRecord: stringBone;
+    recordinRecordtest: recordBone;
+    constructor() {
+        super();
+        this.stringtestinRecord = new stringBone({
+            multiple: true
+
+        });
+    }
+}
+
+
+export class TestSkel extends Skeleton {
+    kindname = "test"
+    edittest: stringBone;
+    constructor() {
+        super();
+        this.edittest=new stringBone({multiple:true});
+    }
+
+}

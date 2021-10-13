@@ -32,9 +32,7 @@ export function getCurrentUser()
         sessionpromise.then((data)=>{
             if(data)
             {
-                db.get("user",data["userkey"]).then((data)=>{
-                    resolve(data);
-                    })
+                db.get("user",data["userkey"]).then((data)=>{resolve(data);})
             }
             else{
                 resolve(null)

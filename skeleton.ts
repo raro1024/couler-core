@@ -8,6 +8,9 @@ import {
 import {
     db
 } from "./db";
+import {
+    conf
+} from "./conf";
 
 
 /**
@@ -15,6 +18,7 @@ import {
  */
 
 export class Skeleton {
+    type: string = "add";
     kindname: string;
     key: stringBone;
     createdate: dateBone;
@@ -31,9 +35,9 @@ export class Skeleton {
                 defaultValue: Date.now(),
                 visible: false
             });
-            console.log("skel is init");
-            
+
         }
+
     }
     /**
      * 
@@ -43,35 +47,28 @@ export class Skeleton {
      * Only if the bone exist the Data will be write in the Database
      * 
      */
-    async writeBones(requestdata, fromClient = false) {
+    writeBones(requestdata, fromClient = false) {
 
         console.log("Fill bones with Data from DB or reqest")
-
-        for (const [bonename, bone] of Object.entries(this)) {
-            if (typeof bone === "object") {
-                if (fromClient) {
-                    if (bone.unique) //We must check if a Skeleton Bone  with this value exist
-                    {
-                        var query = {};
-                        query[bonename] = requestdata[bonename]
-                        await new Promise((resolve, reject) => {
-                            db.get(this.kindname, query).then(() => {
-                                reject();
-                            })
-                        }).catch(() => {
-                            throw {
-                                "msg": "User exist"
-                            }
-                        });
-
-                    }
-                    bone.data = requestdata[bonename];
-                } else {
-                    bone.rawdata = requestdata[bonename];
+        if (this.type === "view") {
+            for (const [bonename, bone] of Object.entries(this)) {
+                if (typeof bone === "object") {
+                    this[bonename] = requestdata[bonename];
                 }
+            }
+        } else {
+            for (const [bonename, bone] of Object.entries(this)) {
+                if (typeof bone === "object") {
+                    if (fromClient) {
+                        bone.data = requestdata[bonename];
+                    } else {
+                        bone.rawdata = requestdata[bonename];
+                    }
 
+                }
             }
         }
+
     }
     /**
      * 
@@ -97,31 +94,36 @@ export class Skeleton {
     }
 
     async toDB() {
-        //Check for unique Value
-        for (const [bonename, bone] of Object.entries(this)) {
-            if (typeof bone === "object") {
-                if (bone.unique) //We must check if a Skeleton Bone  with this value exist
-                {
-                    let query = {};
-                    query[bonename] = bone.data
-                    if (await db.get(this.kindname, query, 1)) {
 
-                        throw "Uniqe Value Exist in Databse"
-                    }
-
-                }
-
-            }
-        }
         if (this.key.data) {
             // Edit
+            console.log("Edit now");
+            console.log(this.key.data);
+            
             this.changedate.data = new Date(); // Overwirte Change date
 
             return await db.update(this.kindname, this.readBones(), this.key.data);
 
         } else {
             //Add
+            //Check for unique Value
+            for (const [bonename, bone] of Object.entries(this)) {
+                if (typeof bone === "object") {
+                    if (bone.unique) //We must check if a Skeleton Bone  with this value exist
+                    {
+                        let query = {};
+                        query[bonename] = bone.data
+                        if (await db.get(this.kindname, query, 1)) {
+
+                            throw "Uniqe Value Exist in Databse"
+                        }
+
+                    }
+
+                }
+            }
             var key = await db.put(this.kindname, this.readBones());
+            
             if (key) {
                 db.update(this.kindname, {
                     "key": key.toString()
@@ -133,9 +135,20 @@ export class Skeleton {
         }
 
     }
-
+    /**
+     * 
+     * @param key of the skel in the Database
+     * Reads the SkelData from the Database and fill alll bones with data
+     * @returns {Boolen} If skel was found
+     */
     async fromDB(key) {
-        this.writeBones(await db.get(this.kindname, key));
+        const skelData = await db.get(this.kindname, key)
+        if (skelData != null) {
+            this.writeBones(skelData);
+            return true
+        }
+        return false;
+
     }
     classname(_class = this) {
         return _class.constructor.name.toLowerCase();

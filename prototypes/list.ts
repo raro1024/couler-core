@@ -20,7 +20,12 @@ import {
 import {
     Bone
 } from "../bones/bone";
-import { Error } from "../errors";
+import {
+    Error
+} from "../errors";
+import {
+    conf
+} from "../conf";
 export class List {
     kindname: any;
     defaultTemplate: string = "index.hbs"
@@ -48,11 +53,12 @@ export class List {
      * Works on Skel Layer
      * @returns 
      */
-    async add(skel, data) {
+    async add(skel, skelData) {
         console.log("in ADD")
         if (!utils.isPostRequest()) {
             //Delete all Bones and Attributes that are not needed
             delete skel.kindname;
+            delete skel.type;
             delete skel.key;
             for (const [bonename, bone] of Object.entries(skel)) {
                 if (bone) {
@@ -65,13 +71,13 @@ export class List {
                     delete skel[bonename]
                 }
             }
-
+            
             skel = this.unfoldSkel(skel)
             return this.render(this.addTemplate, skel)
         }
         //Prepare data before we wirting it to the bones
 
-        var modifiedData = this.prepareData(data);
+        var modifiedData = this.prepareData(skelData);
         await skel.writeBones(modifiedData, true);
         var success = await skel.toDB();
 
@@ -82,12 +88,14 @@ export class List {
 
     }
     @exposed
-    async edit(skel,data) {
-        const key =data.key;
+    async edit(skel, key, skelData) {
+
         if (!utils.isPostRequest()) {
+           
             await skel.fromDB(key);
             delete skel.kindname;
             delete skel.key;
+            delete skel.type;
             for (const [bonename, bone] of Object.entries(skel)) {
                 if (bone) {
                     if (typeof bone === "object") {
@@ -99,15 +107,18 @@ export class List {
                     delete skel[bonename]
                 }
             }
+            console.log("in get");
+            console.log(skel);
+            console.log(key);
             return this.render(this.editTemplate, skel)
         }
-        
+
         //Prepare data before we wirting it to the bones
-        var modifiedData = this.prepareData(data);
+        var modifiedData = this.prepareData(skelData);
         await skel.fromDB(key);
         await skel.writeBones(modifiedData, true);
         var success = await skel.toDB();
-        console.log("is "+success)
+        console.log("is " + success)
         if (success) {
 
             return this.render(this.editSuccessTemplate, skel.readBones())
@@ -123,13 +134,10 @@ export class List {
      */
     @exposed
     async view(param) {
-        if(param["key"])
-        {
-        var skel = await db.get(this.classname(), param["key"])
-        return this.render(this.viewTemplate, skel);
-        }
-        else
-        {
+        if (param["key"]) {
+            var skel = await db.get(this.classname(), param["key"])
+            return this.render(this.viewTemplate, skel);
+        } else {
             console.log("no key in view")
             throw new Error().notFound();
         }
@@ -149,7 +157,7 @@ export class List {
      * @param data 
      * @param template If html the Site to render
      */
-    render(template = this.listTemplate, skel={}) {
+    render(template = this.listTemplate, skel = {}) {
 
         let renderer = utils.getCurrentRender();
         switch (utils.getCurrentRenderName()) {
@@ -214,10 +222,42 @@ export class List {
         return modifiedData;
     }
     // Get Skeleton by KindName
-    viewSkel()
-    {
-        console.log("get Skel by module");
-        console.log(this.classname());
-        console.log(this.kindname);
+    viewSkel() {
+        for (const [skelName, skel] of Object.entries(conf["skeletons"])) {
+
+            if (this.kindname == skelName) {
+                var s = new skel();
+                s.type = "view";
+                return s;
+            }
+        }
+
+    }
+    addSkel() {
+        for (const [skelName, skel] of Object.entries(conf["skeletons"])) {
+
+            if (this.kindname == skelName) {
+                return new skel();
+            }
+        }
+
+    }
+    editSkel() {
+        for (const [skelName, skel] of Object.entries(conf["skeletons"])) {
+
+            if (this.kindname == skelName) {
+                return new skel();
+            }
+        }
+
+    }
+    loginSkel() {
+        for (const [skelName, skel] of Object.entries(conf["skeletons"])) {
+
+            if (this.kindname == skelName) {
+                return new skel();
+            }
+        }
+
     }
 }

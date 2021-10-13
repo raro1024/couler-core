@@ -9,19 +9,10 @@ export class stringBone extends Bone {
     }
     renderer(boneName)
     {
-              
-        return `
-        <div class="boneContainer"  data-multiple="${this.multiple?true:false}">
-            <label  for="${boneName}" id="${boneName}-label">${this.descr?this.descr:boneName}</label >
-            <input  
-            type="text" 
-            name="${boneName}${this.multiple?".0":""}" 
-            id="${boneName}" placeholder="${this.descr}" 
-            ${this.required?"required":""}
-            ${this._value?`value='${this.data}''`:``}
-            ></input>
-        </div>
-        `
+        let bone=super.renderer(boneName);
+        return bone.outerHTML;
+       
+        
         
     }
     

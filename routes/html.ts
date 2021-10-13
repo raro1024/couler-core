@@ -33,7 +33,11 @@ router.use((req, res, next) => {
 
 router.all(['/:module/:handler/:key', '/:module/:handler', '/:module/', "*"], (req, res) => {
     //Load Module
-    var params = getParams(req);
+    var skelData = getParams(req);
+    var key = skelData["key"];
+    delete skelData["key"];
+    
+
     var module_: any = getModule(req);
     const m_ = new module_();
 
@@ -41,7 +45,6 @@ router.all(['/:module/:handler/:key', '/:module/:handler', '/:module/', "*"], (r
     var handler = m_[handlername];
 
     if (Object.getPrototypeOf(m_.constructor).name.toLocaleLowerCase() == "list") { // Check if Parent class is list
-        console.log(params)
         if (handler === undefined || handlername == undefined) // hander is not set try defaul list handler
         {
             handlername = "list";
@@ -68,7 +71,7 @@ router.all(['/:module/:handler/:key', '/:module/:handler', '/:module/', "*"], (r
     }
     switch (handler.constructor.name) {
         case "AsyncFunction":
-            m_[handlername](params).then((data) => {
+            m_[handlername]({key,skelData}).then((data) => {
                 console.log("now send template")
                 if (data) {
                     const template = data[0];
@@ -109,7 +112,7 @@ router.all(['/:module/:handler/:key', '/:module/:handler', '/:module/', "*"], (r
             break
         case "Function":
             try {
-                let [template, skel] = m_[handlername](params)
+                let [template, skel] = m_[handlername]({key,skelData})
                 render({
                     template,
                     skel,
@@ -120,7 +123,7 @@ router.all(['/:module/:handler/:key', '/:module/:handler', '/:module/', "*"], (r
                 console.log(error)
                 //handleError(res, error);
             }
-            res.end(m_[req.params.handler](params).toString())
+            res.end(m_[req.params.handler]({key,skelData}).toString())
             break
 
     }
