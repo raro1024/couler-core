@@ -20,17 +20,12 @@ export class Error
     unauthorized()
     {
         
-        return [401,this.value];
+
+        return this.render("errors/unauthorized.hbs",401); 
     }
     notFound()
     {
-        console.log( utils.getCurrentRenderName())
         return this.render("errors/notFound.hbs",404); 
-    }
-    for()
-    {
-        return [404,this.value];
-        
     }
     render(template = "",statuscode=200, data={}) {
 

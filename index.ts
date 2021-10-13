@@ -2,14 +2,22 @@
  * Starts the main Server 
  */
 import * as express from "express";
-const session = require('express-session');
+import * as session from "express-session";
+import * as cookieSession from "cookie-session";
+import * as cookieParser from "cookie-parser";
+
 var app = express();
-app.use(session({ secret: "-", cookie: { maxAge: 60*60*1000 }}));
+
 import * as jsonhandler from "./routes/json";
 import * as htmlhandler from "./routes/html";
 import * as filehandler from "./routes/file";
 import * as exphbs from 'express-handlebars';
-import { getstartUpTasks } from "./decerators";
+import {
+    getstartUpTasks
+} from "./decerators";
+import {
+    utils
+} from "./utils";
 
 const t0 = Date.now();
 var request;
@@ -18,27 +26,47 @@ let port = 8080;
 
 app.engine('.hbs', exphbs({
     extname: '.hbs',
-    helpers:{
-        "toJSON":function(object){return JSON.stringify(object)},
-        "renderBone":function(boneName,bone){
-            if(bone)
-            {
+    helpers: {
+        "toJSON": function (object) {
+            return JSON.stringify(object)
+        },
+        "renderBone": function (boneName, bone) {
+            if (bone) {
                 return bone.renderer(boneName)
             }
-            
+
         }
     }
 }));
 app.set('view engine', '.hbs');
 getstartUpTasks().forEach(element => {
-    console.log(element)
     element[0][element[1]]();
 });
 
-app.all("*",function(req, res,next) 
-{
-    request=req;
-    next();
+
+//Cookie Handeling
+app.use(cookieParser())
+app.all("*", (req, res, next) => {
+
+    if (!req.cookies["exnode-uniqe-key"]) {
+        res.cookie(`exnode-uniqe-key`, utils.randomString(30), {
+            maxAge: 1000 * 60 * 60 * 24 * 7, // is set in ms
+            secure: true,
+            httpOnly: true,
+            sameSite: 'lax'
+        });
+    }
+
+    request = req;
+
+    if (req._parsedUrl._raw !== "/favicon.ico") {
+        next();
+    }
+    else
+    {
+        res.end("404");
+    }
+
 });
 app.use('/static', express.static('static'));
 
@@ -56,4 +84,6 @@ app.listen(port, () => {
     console.log(`Up in ${t1 - t0} milliseconds.`);
 });
 // Access the session as req.session
-module.exports=function getRequestData(){return request;};
+module.exports = function getRequestData() {
+    return request;
+};

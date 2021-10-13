@@ -76,26 +76,55 @@ export class User extends List {
         if (!utils.isPostRequest()) {
             return this.render(this.loginTemplate);
         }
-        console.log("user login")
-        console.log(data)
-        console.log(data["name"])
         var skel = this.loginSkel();
         await db.get("user", {
             "name": data["name"]
-        }).then(userdata => {
-            skel.writeBones(userdata)
+             },1).then(userdata => {
+            if(userdata)
+            {               
+                console.log(skel);
+                console.log(userdata);
+
+                skel.writeBones(userdata)
+            }
+            else
+            {
+                throw new Error().notFound();
+            }
+           
         }).catch(() => {
-            throw new Error().notFound;
+            throw new Error().notFound();
         });
         if(skel.password.check(data["password"]))
         {
-            console.log("Login seccessfull as ")
-            console.log(skel.name)
+            console.log("login success")
+            utils.setUserSession(skel.key.data);
             return this.render(this.loginSuccessTemplate,skel.readBones())
         }
 
     }
+    @exposed
+    async view({key})
+    {
 
+
+        if(key==="self")
+        {
+            const user =await utils.getCurrentUser()
+        
+            
+            if (user)
+            {
+                this.viewSkel()
+                return this.render(this.viewTemplate,user)
+            }
+            else
+            {
+                throw new Error().unauthorized();
+            }
+               
+        }
+    }
     @exposed
     async add(data) {
         console.log("add")
@@ -112,11 +141,10 @@ export class User extends List {
     }
     @startUpTask
     async createFirstUser() {
-        if (!await db.get("user1", {}, 1)) {
-            console.log("No User Found");
+        if (!await db.get("user", {}, 1)) {
             let skel = this.addSkel();
             const passwordValue = utils.randomString(10);
-            skel.name.data = "admin@exnode.de";
+            skel.name.data = "admin@exnode.com";
             skel.password.data = passwordValue;
             skel.access.data = "root"
             await skel.toDB().then(() => {

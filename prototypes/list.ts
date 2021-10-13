@@ -213,4 +213,11 @@ export class List {
 
         return modifiedData;
     }
+    // Get Skeleton by KindName
+    viewSkel()
+    {
+        console.log("get Skel by module");
+        console.log(this.classname());
+        console.log(this.kindname);
+    }
 }

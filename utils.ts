@@ -30,10 +30,16 @@ export function getCurrentUser()
     const sessionpromise= db.get("sessions",{"sessionID": getSessionKey()});
     const userpromise= new Promise((resolve, reject)=>{
         sessionpromise.then((data)=>{
-            console.log("has session")
-            db.get("user",data["userkey"]).then((data)=>{
-            resolve(data);
-            })
+            if(data)
+            {
+                db.get("user",data["userkey"]).then((data)=>{
+                    resolve(data);
+                    })
+            }
+            else{
+                resolve(null)
+            }
+            
     }).catch(err=>{
        reject();
     })
@@ -47,7 +53,7 @@ export function setUserSession(userkey)
 {
    
     const getRequestData =require("./index");
-    var sessionID = getRequestData().sessionID;   
+    var sessionID = getRequestData().cookies["exnode-uniqe-key"];   
     db.put("sessions",{"sessionID":sessionID,"userkey":userkey});
 }
 

@@ -8,11 +8,8 @@ import {
 import {
     db
 } from "./db";
-import {
-    Error
-} from "./errors";
-import e = require("express");
-import { Bone } from "./bones/bone";
+
+
 /**
  * Basic Skeleton class
  */
@@ -24,6 +21,7 @@ export class Skeleton {
     changedate: dateBone;
     constructor(isRef = false) {
         if (!isRef) {
+
             this.key = new stringBone()
             this.createdate = new dateBone({
                 defaultValue: Date.now(),
@@ -33,6 +31,8 @@ export class Skeleton {
                 defaultValue: Date.now(),
                 visible: false
             });
+            console.log("skel is init");
+            
         }
     }
     /**
@@ -100,11 +100,11 @@ export class Skeleton {
         //Check for unique Value
         for (const [bonename, bone] of Object.entries(this)) {
             if (typeof bone === "object") {
-
                 if (bone.unique) //We must check if a Skeleton Bone  with this value exist
                 {
-                    if(await db.get(this.kindname,{String(bonename):bone.data},1))
-                    {
+                    let query = {};
+                    query[bonename] = bone.data
+                    if (await db.get(this.kindname, query, 1)) {
 
                         throw "Uniqe Value Exist in Databse"
                     }
@@ -113,19 +113,19 @@ export class Skeleton {
 
             }
         }
-        if (this.key.data) // edit
-        {
+        if (this.key.data) {
+            // Edit
             this.changedate.data = new Date(); // Overwirte Change date
 
             return await db.update(this.kindname, this.readBones(), this.key.data);
 
-        } else // add
-        {
-
+        } else {
+            //Add
             var key = await db.put(this.kindname, this.readBones());
-            if (key)
-
-            {
+            if (key) {
+                db.update(this.kindname, {
+                    "key": key.toString()
+                }, key.toString());
                 this.key.data = key;
                 return true;
             }

@@ -155,7 +155,7 @@ function getParams(req) {
 }
 
 function getModule(req) {
-
+    console.log(req.params)
     var requestmodule: string;
     if (req.params.module === undefined || "") {
 
@@ -176,7 +176,7 @@ function getModule(req) {
         }
 
     }
-    throw "Module Not Found"
+    throw "Module Not Found in request"
 
 }
 
