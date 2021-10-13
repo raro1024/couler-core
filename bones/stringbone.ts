@@ -10,7 +10,7 @@ export class stringBone extends Bone {
     renderer(boneName)
     {
         let bone=super.renderer(boneName);
-        return bone.outerHTML;
+        return bone;
        
         
         

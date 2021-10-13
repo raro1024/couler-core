@@ -107,9 +107,8 @@ export class List {
                     delete skel[bonename]
                 }
             }
-            console.log("in get");
-            console.log(skel);
-            console.log(key);
+            skel = this.unfoldSkel(skel)
+
             return this.render(this.editTemplate, skel)
         }
 

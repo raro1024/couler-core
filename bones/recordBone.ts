@@ -13,7 +13,9 @@ import {
 import {
     Bone
 } from "./bone";
-
+import {
+    document
+} from 'html-element';
 export class recordBone extends Bone {
     using: typeof Skeleton;
     parent: typeof Skeleton;
@@ -52,7 +54,7 @@ export class recordBone extends Bone {
 
     }
     get data() {
-      return this._value;
+        return this._value;
 
     }
 
@@ -66,18 +68,18 @@ export class recordBone extends Bone {
 
         if (_val && typeof _val === "object") {
             if (this.multiple) {
-                this._value=[];
+                this._value = [];
                 for (let i = 0; i < _val.length; i++) {
                     var skel = new this.using()
                     for (const [bonename, bone] of Object.entries(skel)) {
                         if (typeof bone === "object") {
                             bone.data = _val[i][bonename];
                         }
-                       
-                        
+
+
                     }
                     this._value.push(skel.readBones());
-                    
+
                 }
             } else {
                 var skel = new this.using()
@@ -86,7 +88,7 @@ export class recordBone extends Bone {
                         bone.data = _val[bonename];
                     }
                 }
-                
+
                 this._value = skel.readBones()
             }
 
@@ -98,24 +100,53 @@ export class recordBone extends Bone {
 
     }
     renderer(boneName) {
+        let outerBone = document.createElement("div");
 
+        if (this.multiple && this._value) {
+            for (let i = 0; i < this._value.length; i++) {
+                outerBone.appendChild(this.createBone(boneName, i));
+            }
+        } else {
+            outerBone.appendChild(this.createBone(boneName));
+
+        }
+        return outerBone;
         //let usingSkel= new this.using();//Create instance of using skel
-        var innerBone = ``
+
+
+    }
+    createBone(boneName, i = 0) {
+
+        let container = document.createElement("div");
+        container.setAttribute("data-multiple", `${this.multiple?true:false}`);
+        container.setAttribute("data-name", boneName + (this.multiple ? ".0" : ""));
+        container["class"] = "recordContainer";
+        container["id"] = "boneName";
+        container.setAttribute("data-multiple", `${this.multiple?true:false}`);
+
         for (const [bonename_, bone] of Object.entries(this.using)) {
             if (typeof bone === "object") {
+                if (this._value) {
+                    if(this.multiple)
+                    {
+                    if (this._value[i]) {
+                        bone.data = this._value[i][bonename_]
+                    }
+                    }
+                    else
+                    {
+                        bone.data = this._value[bonename_]
+                    }
+                }
+                console.log(bone)
+                let innerBoneName = boneName + (this.multiple ? ".0" : "") + "." + bonename_;
+                console.log("innerbone")
 
-                //console.log(boneName+"."+bonename_);
-                //console.log(boneName+(this.multiple?":0":"")+"."+bonename_);
-                let innerBoneName = boneName + (this.multiple ? ".0" : "") + "." + bonename_
-                innerBone += bone.renderer(innerBoneName);
+                container.appendChild(bone.renderer(innerBoneName))
             }
         }
-        return `
-        
-        <div id="${boneName}" data-multiple="${this.multiple?true:false}" data-name="${boneName + (this.multiple ? ".0" : "")}" class="recordContainer">
-            ${innerBone}
-        </div>
-        `
+        return container
+
     }
 
 }

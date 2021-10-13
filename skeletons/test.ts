@@ -1,7 +1,16 @@
-import { numericBone } from "../bones/numericBone";
-import { recordBone } from "../bones/recordBone";
-import { stringBone } from "../bones/stringBone";
-import { RefSkeleton, Skeleton } from "../skeleton";
+import {
+    numericBone
+} from "../bones/numericBone";
+import {
+    recordBone
+} from "../bones/recordBone";
+import {
+    stringBone
+} from "../bones/stringBone";
+import {
+    RefSkeleton,
+    Skeleton
+} from "../skeleton";
 
 class RefRefTest extends RefSkeleton {
     stringtestinRecord: stringBone;
@@ -22,6 +31,7 @@ class RefTest extends RefSkeleton {
             multiple: true
 
         });
+
     }
 }
 
@@ -29,9 +39,16 @@ class RefTest extends RefSkeleton {
 export class TestSkel extends Skeleton {
     kindname = "test"
     edittest: stringBone;
+    recordTest: recordBone;
     constructor() {
         super();
-        this.edittest=new stringBone({multiple:true});
+        this.edittest = new stringBone({
+            multiple: true
+        });
+        this.recordTest = new recordBone({
+            using : RefTest,
+            parent : this,
+            multiple:false
+        })
     }
-
 }

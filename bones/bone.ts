@@ -103,10 +103,11 @@ export class Bone {
         return _val;
     }
     renderer(boneName) {
+
         let outerBone=document.createElement("div");
+        
         if(this.multiple && this._value)
         {
-            var boneArr=[];
             for(let i =0;i<this._value.length;i++)
             {
                 outerBone.appendChild(this.createBone(boneName,i));

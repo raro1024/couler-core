@@ -35,7 +35,7 @@ app.engine('.hbs', exphbs({
         "renderBone": function (boneName, bone) {
             
             if (bone) {
-                return bone.renderer(boneName)
+                return bone.renderer(boneName).outerHTML;
             }
 
         }
