@@ -2,8 +2,6 @@
  * Starts the main Server 
  */
 import * as express from "express";
-import * as session from "express-session";
-import * as cookieSession from "cookie-session";
 import * as cookieParser from "cookie-parser";
 
 var app = express();
@@ -83,12 +81,10 @@ app.use(htmlhandler.router);
 
 
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
-    const t1 = Date.now();
-    console.log(`Up in ${t1 - t0} milliseconds.`);
-});
-// Access the session as req.session
-module.exports = function getRequestData() {
-    return request;
+
+module.exports={
+    core:app,
+    request:()=> { return request;}
 };
+
+// Access the session as req.session
