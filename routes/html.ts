@@ -34,8 +34,11 @@ router.use((req, res, next) => {
 router.all(['/:module/:handler/:key', '/:module/:handler', '/:module/', "*"], (req, res) => {
     //Load Module
     var skelData = getParams(req);
+    if(skelData)
+    {
     var key = skelData["key"];
     delete skelData["key"];
+    }
     
 
     var module_: any = getModule(req);
@@ -201,6 +204,8 @@ function render({
         });
 
     } else {
+        console.log("send ??");
+        
         res.render(template, {
             layout: false,
             skel: skel

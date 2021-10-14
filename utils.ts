@@ -16,7 +16,7 @@ try {
 
  export function getSessionKey()
 {
-    const getRequestData =require("./index");
+    const getRequestData =require("./index").request;
     var ssid = getRequestData().sessionID;
     
     return ssid ;
@@ -50,14 +50,14 @@ export function getCurrentUser()
 export function setUserSession(userkey)
 {
    
-    const getRequestData =require("./index");
+    const getRequestData =require("./index").request;
     var sessionID = getRequestData().cookies["exnode-uniqe-key"];   
     db.put("sessions",{"sessionID":sessionID,"userkey":userkey});
 }
 
 export function isPostRequest()
 {
-    const getRequestData =require("./index");
+    const getRequestData =require("./index").request;
     console.log(getRequestData()["method"])
     return getRequestData()["method"]==="POST"
 }
@@ -82,7 +82,7 @@ export function getCurrentRender()
 }
 export function getCurrentRenderName()
 {
-    const getRequestData =require("./index");
+    const getRequestData =require("./index").request;
     return getRequestData().handlername;
 }
 export function isEmpty(obj)
