@@ -71,13 +71,14 @@ export class List {
                     delete skel[bonename]
                 }
             }
-            
+
             skel = this.unfoldSkel(skel)
             return this.render(this.addTemplate, skel)
         }
         //Prepare data before we wirting it to the bones
 
         var modifiedData = this.prepareData(skelData);
+        skel = this.unfoldSkel(skel);
         await skel.writeBones(modifiedData, true);
         var success = await skel.toDB();
 
@@ -91,7 +92,7 @@ export class List {
     async edit(skel, key, skelData) {
 
         if (!utils.isPostRequest()) {
-           
+
             await skel.fromDB(key);
             delete skel.kindname;
             delete skel.key;
@@ -107,14 +108,17 @@ export class List {
                     delete skel[bonename]
                 }
             }
-            skel = this.unfoldSkel(skel)
-
+            skel = this.unfoldSkel(skel);
+            console.log("end");
+            console.log(skel);
             return this.render(this.editTemplate, skel)
         }
 
         //Prepare data before we wirting it to the bones
         var modifiedData = this.prepareData(skelData);
+
         await skel.fromDB(key);
+        skel = this.unfoldSkel(skel)
         await skel.writeBones(modifiedData, true);
         var success = await skel.toDB();
         console.log("is " + success)
@@ -186,8 +190,6 @@ export class List {
      */
     prepareData(data) {
 
-        console.log("data##")
-        console.log(JSON.stringify(data));
         var modifiedData = {}
         for (const [boneName, boneData] of Object.entries(data)) {
             //console.log(boneData)
@@ -198,14 +200,12 @@ export class List {
                 objectPath.insert(modifiedData, boneName, boneData)
             }
         }
-        console.log("mod data");
-        console.log(JSON.stringify(modifiedData));
         return modifiedData;
 
     }
     unfoldSkel(skel: Skeleton) {
         console.log("unfold")
-        var modifiedData = {}
+        var modifiedData = skel;
         for (const [boneName, boneArgs] of Object.entries(skel)) {
             if (boneArgs) {
                 if (boneArgs.type == "record") {
@@ -217,7 +217,8 @@ export class List {
             }
 
         }
-
+        console.log("mod dataa");
+        console.log(modifiedData)
         return modifiedData;
     }
     // Get Skeleton by KindName

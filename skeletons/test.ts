@@ -31,6 +31,10 @@ class RefTest extends RefSkeleton {
             multiple: true
 
         });
+        this.recordinRecordtest=new recordBone({
+            using:RefRefTest,
+            parent:this
+        })
 
     }
 }

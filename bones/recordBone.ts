@@ -17,7 +17,7 @@ import {
     document
 } from 'html-element';
 export class recordBone extends Bone {
-    using: typeof Skeleton;
+    using: Skeleton;
     parent: typeof Skeleton;
     declare _value: any;
     constructor({
@@ -59,6 +59,9 @@ export class recordBone extends Bone {
     }
 
     set data(_val) {
+        console.log("write to record");
+        console.log(_val);
+        console.log(this.using)
         if (_val == undefined) {
             throw "No Values In Record Bone"
         }
@@ -70,26 +73,24 @@ export class recordBone extends Bone {
             if (this.multiple) {
                 this._value = [];
                 for (let i = 0; i < _val.length; i++) {
-                    var skel = new this.using()
-                    for (const [bonename, bone] of Object.entries(skel)) {
+                    for (const [bonename, bone] of Object.entries(this.using)) {
                         if (typeof bone === "object") {
                             bone.data = _val[i][bonename];
                         }
 
 
                     }
-                    this._value.push(skel.readBones());
+                    this._value.push(this.using.readBones());
 
                 }
             } else {
-                var skel = new this.using()
-                for (const [bonename, bone] of Object.entries(skel)) {
+                for (const [bonename, bone] of Object.entries(this.using)) {
                     if (typeof bone === "object") {
                         bone.data = _val[bonename];
                     }
                 }
 
-                this._value = skel.readBones()
+                this._value = this.using.readBones()
             }
 
         } else {
