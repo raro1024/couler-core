@@ -1,18 +1,16 @@
 /**
  * Standart module where other can extends from
  */
-import {
-    utils
-} from "../utils";
-import {
+
+console.log("in list")
+ import {
     exposed
 } from "../decerators";
 import {
     db
 } from "../db";
-import {
-    json
-} from "../routes/json";
+
+
 import * as objectPath from "object-Path";
 import {
     Skeleton
@@ -26,7 +24,10 @@ import {
 import {
     conf
 } from "../conf";
-export class List {
+import  * as utils from "../utils";
+
+console.log("#utils .. list");
+export default class List {
     kindname: any;
     defaultTemplate: string = "index.hbs"
     listTemplate: string = "list.hbs"
@@ -152,7 +153,8 @@ export class List {
      */
     @exposed
     async list() {
-        return this.render(this.listTemplate, await db.get(this.classname()));
+        let skellist =await db.get(this.classname())
+        return this.render(this.listTemplate,skellist);
     }
 
     /**
@@ -169,7 +171,7 @@ export class List {
             case "html":
                 return [template, skel]
             default:
-                return json.render(skel)
+                break;
         }
     }
 

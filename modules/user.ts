@@ -1,15 +1,11 @@
 import {
     Skeleton
 } from "../skeleton";
-import {
-    List
-} from "../prototypes/list";
+import List from "../prototypes/list";
 import {
     db
 } from "../db";
-import {
-    utils
-} from "../utils";
+import * as utils from "../utils";
 import {
     exposed,
     startUpTask
@@ -17,12 +13,6 @@ import {
 import {
     Error
 } from "../errors";
-import {
-    stringBone
-} from "../bones/stringBone";
-import {
-    passswordBone
-} from "../bones/passwordBone";
 
 export class User extends List {
     kindname = "user" //For Routing and DB Shit
@@ -83,7 +73,10 @@ export class User extends List {
 
 
         if (key === "self") {
+            console.log("in self")
+           
             const user = await utils.getCurrentUser();
+            console.log(user)
             if (user) {
                 //this.addSkel();
                 var skel:Skeleton = this.viewSkel();
@@ -93,6 +86,10 @@ export class User extends List {
                 throw new Error().unauthorized();
             }
 
+        }
+        if(!key)
+        {
+            return new Error().notFound();
         }
     }
     @exposed

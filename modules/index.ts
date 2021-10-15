@@ -1,24 +1,21 @@
 import { conf } from "../conf";
-import {
-    db
-} from "../db";
+import {db} from "../db";
 import {
     exposed
 } from "../decerators";
-import { Singel } from "../prototypes/singel";
+import { Single } from "../prototypes/Single";
+
 import {
     html
 } from "../routes/html";
 import { json } from "../routes/json";
-import {
-    utils
-} from "../utils";
+import * as utils from "../utils";
 
 
 /**
  * If "/*" Called
  */
-export class Index extends Singel{
+export class Index extends Single{
     kindname = "index"
     
     constructor() {

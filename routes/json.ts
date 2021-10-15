@@ -2,18 +2,21 @@ import * as express from "express";
 import * as decerators from "../decerators";
 import * as coremodules from "../modules/init";
 const modulesPath = "../../modules/init";
+
 var modules = {};
 try {
-    modules = require(modulesPath)
-} catch (e) {}
+    console.log("Load Modules");
+    modules = require(modulesPath);
+    console.log("Loaded Modules are =>");
+    console.log(modules);
+} catch (e) {
+    console.log("Error=>")
+    console.log(e);
+}
 
 import {
     Error
 } from "../errors";
-import {
-    nextTick
-} from "process";
-
 export const name = "json" //name of The renderer
 export const router = express.Router();
 
@@ -57,6 +60,7 @@ router.all(['/json/:module/:handler/:key', '/json/:module/:handler', '/json/:mod
         case "AsyncFunction":
             console.log("params")
             console.log(params)
+            console.log(handlername)
             m_[handlername](params).then((data) => {
                 if (typeof data === "object") {
                     res.json(data)

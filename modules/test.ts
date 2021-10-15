@@ -3,9 +3,7 @@ import {
     RefSkeleton
 } from "../skeleton";
 import * as seckey from "../seckey"
-import {
-    List
-} from "../prototypes/list";
+import List from "../prototypes/list";
 
 import {
     exposed, startUpTask

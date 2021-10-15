@@ -4,18 +4,13 @@ import {
 import {
     exposed
 } from "../decerators";
-import {
-    json
-} from "../routes/json";
-import {
-    utils
-} from "../utils";
+import  * as utils from "../utils";
 
-export class Singel {
+export class Single {
     indexTemplate = "index.hbs";
-    viewTemplate = "view.hbs"
+    viewTemplate = "view.hbs";
     constructor() {
-
+       
     }
     classname(_class = this) {
         return _class.constructor.name.toLowerCase();
@@ -37,7 +32,7 @@ export class Singel {
             case "html":
                 return [template,skel]
             default:
-                return json.render(skel)
+               break;
         }
     }
 }

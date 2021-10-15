@@ -5,26 +5,28 @@
 
 
 import {db} from "./db";
-import { html } from "./routes/html";
-import { json } from "./routes/json";
+import { conf } from "./conf";
+
+
 import * as coremodules from "./modules/init";
-const modulesPath= "../modules/init";
+const modulesPath= "/modules/init";
 var modules={};
 try {
-    modules=require(modulesPath)
+    modules=require(modulesPath);
 }catch(e){}
 
  export function getSessionKey()
 {
-    const getRequestData =require("./index").request;
-    var ssid = getRequestData().sessionID;
+    const getRequestData =require("./index").request();
+    return getRequestData.cookies["exnode-uniqe-key"]
     
-    return ssid ;
 }
 /**
  * Function to get the current user
  * @returns Promies
  */
+
+
 export function getCurrentUser()
 {
     const sessionpromise= db.get("sessions",{"sessionID": getSessionKey()});
@@ -32,6 +34,7 @@ export function getCurrentUser()
         sessionpromise.then((data)=>{
             if(data)
             {
+                console.log("foudnd key")
                 db.get("user",data["userkey"]).then((data)=>{resolve(data);})
             }
             else{
@@ -39,6 +42,7 @@ export function getCurrentUser()
             }
             
     }).catch(err=>{
+        console.log(err);
        reject();
     })
    
@@ -77,7 +81,7 @@ export function randomString(length:number=20) // THX https://stackoverflow.com/
  */
 export function getCurrentRender()
 {
-    var handlerDict={"json":json,"html":html}
+    var handlerDict={"json":conf["routes.json"],"html":conf["routes.html"]}
     return handlerDict[getCurrentRenderName()];
 }
 export function getCurrentRenderName()
@@ -106,4 +110,4 @@ export function getCurrentModuleName()
     return requestmoduleName;
 
 }
-export * as utils from "./utils";
+//export * as utils from "./utils";

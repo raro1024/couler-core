@@ -1,9 +1,7 @@
 import {
     Error
 } from "./errors";
-import {
-    utils
-} from "./utils";
+import * as utils from "./utils";
 var  query:any;
 /**
  * this Class handle all db write and read stuff with mongodb 
@@ -21,7 +19,7 @@ export async function connectToDB(_url = undefined, dbName = "main") {
     // Replace the uri string with your MongoDB deployment's connection string.
     //const uri =`mongodb://${username}:${password}@${url}?retryWrites=true&writeConcern=majority`; // For local tests
     var url = _url || 'mongodb://localhost:27017/' + dbName;
-    console.log(url)
+    console.log("Connect to =>"+url)
     //const client = new MongoClient(uri);
     return MongoClient.connect(url)
 

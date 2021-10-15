@@ -4,17 +4,20 @@ import * as coremodules from "../modules/init";
 const modulesPath = "../../modules/init";
 var modules = {};
 try {
-    modules = require(modulesPath)
-} catch (e) {}
+    console.log("Load Modules");
+    modules = require(modulesPath);
+    console.log("Loaded Modules are =>");
+    console.log(modules);
+} catch (e) {
+    console.log("Error=>")
+    console.log(e);
+}
 
 
 import {
     Error
 } from "../errors";
-
-import {
-    utils
-} from "../utils";
+import * as utils from "../utils";
 export const name = "html" //name of The renderer
 export const router = express.Router();
 router.use(express.urlencoded({
@@ -58,7 +61,7 @@ router.all(['/:module/:handler/:key', '/:module/:handler', '/:module/', "*"], (r
             }
         }
     }
-    if (Object.getPrototypeOf(m_.constructor).name.toLocaleLowerCase() == "singel") {
+    if (Object.getPrototypeOf(m_.constructor).name.toLocaleLowerCase() == "single") {
         if (handler === undefined || handlername == undefined) // hander is not set try defaul list handler
         {
             handlername = "view";
@@ -177,6 +180,7 @@ function getModule(req) {
 
     for (const [modulename, module_] of Object.entries(coremodules)) {
         if (requestmodule === modulename.toLocaleLowerCase()) {
+            console.log("core modules=>")
             console.log(module_)
             return module_
         }

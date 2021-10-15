@@ -8,9 +8,6 @@ import {
 import {
     db
 } from "./db";
-import {
-    conf
-} from "./conf";
 
 
 /**

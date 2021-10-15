@@ -3,22 +3,24 @@
  */
 import * as express from "express";
 import * as cookieParser from "cookie-parser";
-
+import { conf } from './conf';
 var app = express();
 
-import * as jsonhandler from "./routes/json";
 import * as htmlhandler from "./routes/html";
-import * as filehandler from "./routes/file";
+import * as jsonhandler from "./routes/json";
+
+conf["routes.json"]=jsonhandler;
+conf["routes.html"]=htmlhandler;
+//import * as filehandler from "./routes/file";
 import * as exphbs from 'express-handlebars';
 import {
     getstartUpTasks
 } from "./decerators";
-import {
-    utils
-} from "./utils";
+import * as utils from "./utils";
 import * as initSkelton from"./skeletons/init";
 import * as objectPath from "object-Path";
-import { conf } from "./conf";
+
+console.log("All modules are loded in index==>>");
 const t0 = Date.now();
 var request;
 
@@ -73,7 +75,7 @@ for (const [skelName, skel] of Object.entries(initSkelton)) {
 }
 app.use('/static', express.static('static'));
 
-app.use(filehandler.router)
+//app.use(filehandler.router)
 //Standart json handler
 app.use(jsonhandler.router);
 //Standart html handler
