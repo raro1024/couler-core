@@ -5,7 +5,9 @@
 
 
 import {db} from "./db";
+
 import { conf } from "./conf";
+
 
 
 import * as coremodules from "./modules/init";
@@ -15,11 +17,11 @@ try {
     modules=require(modulesPath);
 }catch(e){}
 
- export function getSessionKey()
+export function getSessionKey()
 {
-    const getRequestData =require("./index").request();
-    return getRequestData.cookies["exnode-uniqe-key"]
-    
+    const getRequestData =require("./index").request;
+    return getRequestData().cookies["exnode-uniqe-key"];    ;
+
 }
 /**
  * Function to get the current user

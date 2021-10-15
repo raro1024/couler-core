@@ -17,11 +17,14 @@ import {
     getstartUpTasks
 } from "./decerators";
 import * as utils from "./utils";
+
 import * as initcoreSkelton from"./skeletons/init";
 import * as initSkelton from"../skeletons/init";
+
 import * as objectPath from "object-Path";
 
-console.log("All modules are loded in index==>>");
+import * as adminhandler from "../exnode-admin/handler"; 
+
 const t0 = Date.now();
 var request;
 
@@ -80,7 +83,19 @@ for (const [skelName, skel] of Object.entries(initSkelton)) {
     console.log(skel)
     objectPath.set(conf,"skeletons."+new skel().kindname,skel)
 }
+
 app.use('/static', express.static('static'));
+app.use("/admin/static", express.static("./exnode-admin/static"));
+
+//Renderer for admin
+
+
+
+//adminrouter.use(bodyParser.urlencoded({extended: true}))
+
+
+app.use(adminhandler.router);
+
 
 app.use(filehandler.router)
 //Standart json handler

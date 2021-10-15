@@ -33,7 +33,7 @@ export class Error
                 return renderer.render(data)
             case "html":
                 return [template, data,statuscode]
-            
+
         }
     }
     
