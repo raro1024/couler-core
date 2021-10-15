@@ -5,10 +5,9 @@ const modulesPath = "../../modules/init";
 
 var modules = {};
 try {
-    console.log("Load Modules");
+
     modules = require(modulesPath);
-    console.log("Loaded Modules are =>");
-    console.log(modules);
+
 } catch (e) {
     console.log("Error=>")
     console.log(e);

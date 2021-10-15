@@ -36,7 +36,7 @@ export class numericBone extends Bone {
     }
     renderer(boneName) {
         let bone=super.renderer(boneName);
-        bone.childNodes.forEach(node => {
+        bone.childNodes[0].childNodes.forEach(node => {
             console.log(node)
             if(node.tagName=="input")
             {
@@ -44,7 +44,7 @@ export class numericBone extends Bone {
             }
         });
         
-        return bone.outerHTML;
+        return bone;
        
     }
 }

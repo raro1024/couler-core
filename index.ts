@@ -11,13 +11,14 @@ import * as jsonhandler from "./routes/json";
 
 conf["routes.json"]=jsonhandler;
 conf["routes.html"]=htmlhandler;
-//import * as filehandler from "./routes/file";
+import * as filehandler from "./routes/file";
 import * as exphbs from 'express-handlebars';
 import {
     getstartUpTasks
 } from "./decerators";
 import * as utils from "./utils";
-import * as initSkelton from"./skeletons/init";
+import * as initcoreSkelton from"./skeletons/init";
+import * as initSkelton from"../skeletons/init";
 import * as objectPath from "object-Path";
 
 console.log("All modules are loded in index==>>");
@@ -69,13 +70,19 @@ app.all("*", (req, res, next) => {
     }
 
 });
+for (const [skelName, skel] of Object.entries(initcoreSkelton)) {
+
+    objectPath.set(conf,"skeletons."+new skel().kindname,skel)
+}
 for (const [skelName, skel] of Object.entries(initSkelton)) {
 
+    console.log("init skeletons=>")
+    console.log(skel)
     objectPath.set(conf,"skeletons."+new skel().kindname,skel)
 }
 app.use('/static', express.static('static'));
 
-//app.use(filehandler.router)
+app.use(filehandler.router)
 //Standart json handler
 app.use(jsonhandler.router);
 //Standart html handler

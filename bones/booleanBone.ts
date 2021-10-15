@@ -1,4 +1,3 @@
-import e = require("express");
 import {Bone} from "./bone";
 
 export class booleanBone extends Bone {

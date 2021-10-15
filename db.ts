@@ -128,6 +128,42 @@ export async function get(module, query = {}, limit = 100) {
     return dataPromies;
 
 }
+export async function list(module, query = {}, limit = 100) {
+
+    var client = await dbconn; //await connectToDB();
+    var db = client.db();
+    var dataPromies = new Promise((resolve, reject) => {
+
+        if (typeof query === "string") {
+            console.log("key is string")
+            query = {
+                "_id": ObjectId(query)
+            }
+        }
+        if (utils.isEmpty(query)) {
+            console.log("query ERR")
+        }
+        db.collection(module).find(query).limit(limit).toArray(function (err, res) {
+            if (err)
+            {
+                reject();
+            }
+            //client.close();
+            if (res != null && res.length > 0) {
+
+                resolve(res);
+
+            } else {
+                resolve(null);
+            }
+
+        });
+
+
+    });
+    return dataPromies;
+
+}
 
 /**
  * Creates an new Database only if first Startup

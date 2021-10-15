@@ -1,5 +1,5 @@
 import {Bone} from "./bone";
-import {utils} from "../utils";
+import * as utils from "../utils";
 const crypto = require('crypto');
 
 

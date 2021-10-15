@@ -29,7 +29,7 @@ import  * as utils from "../utils";
 console.log("#utils .. list");
 export default class List {
     kindname: any;
-    defaultTemplate: string = "index.hbs"
+    defaultTemplate: string = "list.hbs"
     listTemplate: string = "list.hbs"
     viewTemplate: string = "view.hbs"
 
@@ -54,9 +54,11 @@ export default class List {
      * Works on Skel Layer
      * @returns 
      */
-    async add(skel, skelData) {
-        console.log("in ADD")
+    @exposed
+    async add(skelData) {
+        var skel=this.addSkel();
         if (!utils.isPostRequest()) {
+            
             //Delete all Bones and Attributes that are not needed
             delete skel.kindname;
             delete skel.type;
@@ -153,7 +155,7 @@ export default class List {
      */
     @exposed
     async list() {
-        let skellist =await db.get(this.classname())
+        let skellist =await db.list(this.classname())
         return this.render(this.listTemplate,skellist);
     }
 
@@ -236,9 +238,13 @@ export default class List {
 
     }
     addSkel() {
+        console.log(conf["skeletons"])
+        console.log(conf["skeletons"])
         for (const [skelName, skel] of Object.entries(conf["skeletons"])) {
-
-            if (this.kindname == skelName) {
+console.log("search for skel");
+console.log(skel)
+            if (this.classname() == skelName) {
+                console.log("add skel was found");
                 return new skel();
             }
         }

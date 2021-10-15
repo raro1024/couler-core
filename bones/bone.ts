@@ -1,9 +1,6 @@
 import { document } from 'html-element';
 
-import {
-    utils
-} from "../utils";
-
+import * as utils from "../utils";
 /**
  * Basic Bone
  * @param descr For the Frontend stand in the placeholder of the Input
