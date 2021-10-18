@@ -3,14 +3,16 @@
  */
 import * as express from "express";
 import * as cookieParser from "cookie-parser";
-import { conf } from './conf';
+import {
+    conf
+} from './conf';
 var app = express();
 
 import * as htmlhandler from "./routes/html";
 import * as jsonhandler from "./routes/json";
 
-conf["routes.json"]=jsonhandler;
-conf["routes.html"]=htmlhandler;
+conf["routes.json"] = jsonhandler;
+conf["routes.html"] = htmlhandler;
 import * as filehandler from "./routes/file";
 import * as exphbs from 'express-handlebars';
 import {
@@ -18,12 +20,12 @@ import {
 } from "./decerators";
 import * as utils from "./utils";
 
-import * as initcoreSkelton from"./skeletons/init";
-import * as initSkelton from"../skeletons/init";
+import * as initcoreSkelton from "./skeletons/init";
+import * as initSkelton from "../skeletons/init";
 
 import * as objectPath from "object-Path";
 
-import * as adminhandler from "../exnode-admin/handler"; 
+import * as adminhandler from "../exnode-admin/handler";
 
 const t0 = Date.now();
 var request;
@@ -37,7 +39,7 @@ app.engine('.hbs', exphbs({
             return JSON.stringify(object)
         },
         "renderBone": function (boneName, bone) {
-            
+
             if (bone) {
                 return bone.renderer(boneName).outerHTML;
             }
@@ -75,13 +77,11 @@ app.all("*", (req, res, next) => {
 });
 for (const [skelName, skel] of Object.entries(initcoreSkelton)) {
 
-    objectPath.set(conf,"skeletons."+new skel().kindname,skel)
+    objectPath.set(conf, "skeletons." + new skel().kindname, skel)
 }
 for (const [skelName, skel] of Object.entries(initSkelton)) {
 
-    console.log("init skeletons=>")
-    console.log(skel)
-    objectPath.set(conf,"skeletons."+new skel().kindname,skel)
+    objectPath.set(conf, "skeletons." + new skel().kindname, skel)
 }
 
 app.use('/static', express.static('static'));
@@ -106,9 +106,11 @@ app.use(htmlhandler.router);
 
 
 
-module.exports={
-    core:app,
-    request:()=> { return request;}
+module.exports = {
+    core: app,
+    request: () => {
+        return request;
+    }
 };
 
 // Access the session as req.session

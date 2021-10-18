@@ -160,7 +160,7 @@ function handleError(res, error) {
     }
 }
 export async function render(data = {}) {
-    console.log("in json ")
+   
     return data;
 }
 

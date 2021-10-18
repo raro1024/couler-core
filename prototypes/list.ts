@@ -155,8 +155,15 @@ export default class List {
      */
     @exposed
     async list() {
-        let skellist =await db.list(this.classname())
-        return this.render(this.listTemplate,skellist);
+        let skellist =await db.list(this.classname());
+        let structure = this.viewSkel();
+        delete structure.kindname;
+        delete structure.type;
+        let data ={
+            "values":skellist,
+            "structure":structure
+        }
+        return this.render(this.listTemplate,data);
     }
 
     /**
@@ -165,7 +172,6 @@ export default class List {
      * @param template If html the Site to render
      */
     render(template = this.listTemplate, skel = {}) {
-
         let renderer = utils.getCurrentRender();
         switch (utils.getCurrentRenderName()) {
             case "json":
@@ -229,7 +235,8 @@ export default class List {
     viewSkel() {
         for (const [skelName, skel] of Object.entries(conf["skeletons"])) {
 
-            if (this.kindname == skelName) {
+            if (this.classname() == skelName) {
+                console.log("view skel was found");
                 var s = new skel();
                 s.type = "view";
                 return s;
@@ -238,11 +245,7 @@ export default class List {
 
     }
     addSkel() {
-        console.log(conf["skeletons"])
-        console.log(conf["skeletons"])
         for (const [skelName, skel] of Object.entries(conf["skeletons"])) {
-console.log("search for skel");
-console.log(skel)
             if (this.classname() == skelName) {
                 console.log("add skel was found");
                 return new skel();
