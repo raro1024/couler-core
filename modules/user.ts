@@ -75,7 +75,7 @@ export class User extends List {
         if (key === "self") {
             console.log("in self")
            
-            const user = await utils.getCurrentUser();
+            const user:any = await utils.getCurrentUser();
             console.log(user)
             if (user) {
                 //this.addSkel();
@@ -94,7 +94,7 @@ export class User extends List {
     }
     @exposed
     async add({skelData}) {
-        return super.add(this.addSkel(), skelData);
+        return super.add(skelData);
     }
     @exposed
     async edit({key,skelData}) {
@@ -110,8 +110,7 @@ export class User extends List {
                 throw new Error().unauthorized();
             }
         }
-
-        return super.edit(this.editSkel(),key,skelData);
+        return super.edit(key,skelData);
     }
     @startUpTask
     async createFirstUser() {

@@ -5,16 +5,20 @@
  * -mimetype
  * -downloadURL
  * -size
+ * 
+ * @param {String} viewString This is the Name of the Field in the Metadata that ist showen in the Admin
  */
  import { document } from 'html-element';
 import {Bone} from "./bone";
 
 export class fileBone extends Bone {
+    viewString: string;
 
-    constructor({descr=undefined, multiple = false, defaultValue= undefined, required = false,unique=false }={})
+    constructor({descr=undefined, multiple = false, defaultValue= undefined, required = false,unique=false ,viewString="filename"}={})
     {
         super({descr: descr, multiple : multiple, defaultValue: defaultValue, required : required,unique:unique});
         this.type = "file";
+        this.viewString = viewString;
     }
     
     convertData(_val)
@@ -36,6 +40,7 @@ export class fileBone extends Bone {
                 console.log("found node");
                 console.log(node);
                 node["type"]="file";
+                delete node["name"];
                 
             }
         });

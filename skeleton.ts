@@ -94,9 +94,10 @@ export class Skeleton {
 
         if (this.key.data) {
             // Edit
-            console.log("Edit now");
+            console.log("Edit now __");
             console.log(this.key.data);
-            
+            console.log(this.readBones());
+
             this.changedate.data = new Date(); // Overwirte Change date
 
             return await db.update(this.kindname, this.readBones(), this.key.data);
@@ -120,7 +121,7 @@ export class Skeleton {
                 }
             }
             var key = await db.put(this.kindname, this.readBones());
-            
+
             if (key) {
                 db.update(this.kindname, {
                     "key": key.toString()

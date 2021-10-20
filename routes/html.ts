@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as decerators from "../decerators";
 import * as coremodules from "../modules/init";
+import * as bodyParser from "body-parser";
 const modulesPath = "../../modules/init";
 var modules = {};
 try {
@@ -21,7 +22,7 @@ export const name = "html" //name of The renderer
 export const router = express.Router();
 router.use(express.urlencoded({
     extended: true
-}))
+}));
 router.use((req, res, next) => {
     req["handlername"] = "html"; // Set the handler Namer
     next();

@@ -16,6 +16,7 @@ try {
 import {
     Error
 } from "../errors";
+import { cp } from "fs";
 export const name = "json" //name of The renderer
 export const router = express.Router();
 
@@ -34,7 +35,12 @@ router.use((req, res, next) => {
 })
 router.all(['/json/:module/:handler/:key', '/json/:module/:handler', '/json/:module/', "/json*"], (req, res) => {
     //Load Module
-    var params = getParams(req);
+    var skelData = getParams(req);
+    if(skelData)
+    {
+    var key = skelData["key"];
+    delete skelData["key"];
+    }
     var module_: any = getModule(req);
     const m_ = new module_();
 
@@ -57,10 +63,7 @@ router.all(['/json/:module/:handler/:key', '/json/:module/:handler', '/json/:mod
     }
     switch (handler.constructor.name) {
         case "AsyncFunction":
-            console.log("params")
-            console.log(params)
-            console.log(handlername)
-            m_[handlername](params).then((data) => {
+            m_[handlername]({key,skelData}).then((data) => {
                 if (typeof data === "object") {
                     res.json(data)
                     res.end()
@@ -75,12 +78,12 @@ router.all(['/json/:module/:handler/:key', '/json/:module/:handler', '/json/:mod
             break
         case "Function":
             try {
-                res.json(m_[handlername](params))
+                res.json(m_[handlername]({key,skelData}));
                 res.end()
             } catch (error) {
                 handleError(res, error)
             }
-            res.end(m_[req.params.handler](params).toString())
+            res.end(m_[req.params.handler]({key,skelData}).toString())
             break
 
     }

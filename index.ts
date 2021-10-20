@@ -58,6 +58,7 @@ app.use(cookieParser())
 app.all("*", (req, res, next) => {
 
     if (!req.cookies["exnode-uniqe-key"]) {
+        console.log("Set new cookie")
         res.cookie(`exnode-uniqe-key`, utils.randomString(30), {
             maxAge: 1000 * 60 * 60 * 24 * 7, // is set in ms
             secure: true,

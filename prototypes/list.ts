@@ -3,7 +3,7 @@
  */
 
 console.log("in list")
- import {
+import {
     exposed
 } from "../decerators";
 import {
@@ -24,7 +24,10 @@ import {
 import {
     conf
 } from "../conf";
-import  * as utils from "../utils";
+import * as utils from "../utils";
+import {
+    cp
+} from "fs";
 
 console.log("#utils .. list");
 export default class List {
@@ -56,9 +59,9 @@ export default class List {
      */
     @exposed
     async add(skelData) {
-        var skel=this.addSkel();
+        var skel = this.addSkel();
         if (!utils.isPostRequest()) {
-            
+
             //Delete all Bones and Attributes that are not needed
             delete skel.kindname;
             delete skel.type;
@@ -79,10 +82,13 @@ export default class List {
             return this.render(this.addTemplate, skel)
         }
         //Prepare data before we wirting it to the bones
-
         var modifiedData = this.prepareData(skelData);
         skel = this.unfoldSkel(skel);
+
         await skel.writeBones(modifiedData, true);
+        console.log("mod skel=>")
+        console.log(modifiedData)
+        console.log(skel)
         var success = await skel.toDB();
 
         if (success) {
@@ -92,8 +98,8 @@ export default class List {
 
     }
     @exposed
-    async edit(skel, key, skelData) {
-
+    async edit(key, skelData) {
+        var skel = this.editSkel();
         if (!utils.isPostRequest()) {
 
             await skel.fromDB(key);
@@ -155,15 +161,15 @@ export default class List {
      */
     @exposed
     async list() {
-        let skellist =await db.list(this.classname());
+        let skellist = await db.list(this.classname());
         let structure = this.viewSkel();
         delete structure.kindname;
         delete structure.type;
-        let data ={
-            "values":skellist,
-            "structure":structure
+        let data = {
+            "values": skellist,
+            "structure": structure
         }
-        return this.render(this.listTemplate,data);
+        return this.render(this.listTemplate, data);
     }
 
     /**
