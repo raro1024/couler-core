@@ -60,8 +60,6 @@ export class recordBone extends Bone {
 
     set data(_val) {
         console.log("write to record");
-        console.log(_val);
-        console.log(this.using)
         if (_val == undefined) {
             throw "No Values In Record Bone"
         }

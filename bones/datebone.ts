@@ -1,5 +1,5 @@
 /**
- * HTML Input TTypes
+ * HTML Input Types
  * ~date
  * ~date-time
  * ~time

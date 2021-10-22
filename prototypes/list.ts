@@ -58,7 +58,13 @@ export default class List {
      * @returns 
      */
     @exposed
-    async add(skelData) {
+    async add(args) {
+
+        const skelData =args["skelData"]
+        if(!skelData)
+        {
+            throw "no add data"
+        }
         var skel = this.addSkel();
         if (!utils.isPostRequest()) {
 
@@ -87,8 +93,6 @@ export default class List {
 
         await skel.writeBones(modifiedData, true);
         console.log("mod skel=>")
-        console.log(modifiedData)
-        console.log(skel)
         var success = await skel.toDB();
 
         if (success) {
@@ -98,8 +102,11 @@ export default class List {
 
     }
     @exposed
-    async edit(key, skelData) {
+    async edit({key, skelData}) {
+        console.log("in edit=>")
+        console.log(key,skelData)
         var skel = this.editSkel();
+        console.log(skel)
         if (!utils.isPostRequest()) {
 
             await skel.fromDB(key);
@@ -262,7 +269,7 @@ export default class List {
     editSkel() {
         for (const [skelName, skel] of Object.entries(conf["skeletons"])) {
 
-            if (this.kindname == skelName) {
+            if (this.classname() == skelName) {
                 return new skel();
             }
         }
@@ -271,7 +278,7 @@ export default class List {
     loginSkel() {
         for (const [skelName, skel] of Object.entries(conf["skeletons"])) {
 
-            if (this.kindname == skelName) {
+            if (this.classname() == skelName) {
                 return new skel();
             }
         }

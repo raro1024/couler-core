@@ -95,7 +95,6 @@ export async function get(module, query = {}, limit = 100) {
     var dataPromies = new Promise((resolve, reject) => {
 
         if (typeof query === "string") {
-            console.log("key is string")
             query = {
                 "_id": ObjectId(query)
             }

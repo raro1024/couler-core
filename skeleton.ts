@@ -96,7 +96,6 @@ export class Skeleton {
             // Edit
             console.log("Edit now __");
             console.log(this.key.data);
-            console.log(this.readBones());
 
             this.changedate.data = new Date(); // Overwirte Change date
 
