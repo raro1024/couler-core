@@ -124,7 +124,7 @@ export class User extends List {
     }
     @exposed
     async add(skelData:object) {
-        return super.add(skelData);
+        return super.add({skelData});
     }
     @exposed
     async edit(key:string,skelData:object) {

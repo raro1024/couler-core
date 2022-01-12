@@ -41,6 +41,7 @@ app.engine('.hbs', exphbs({
         "renderBone": function (boneName, bone) {
 
             if (bone) {
+
                 return bone.renderer(boneName).outerHTML;
             }
 
@@ -48,6 +49,7 @@ app.engine('.hbs', exphbs({
     }
 }));
 app.set('view engine', '.hbs');
+//Get all startupTask an calls it
 getstartUpTasks().forEach(element => {
     element[0][element[1]]();
 });

@@ -58,7 +58,7 @@ export default class List {
      * @returns 
      */
     @exposed
-    async add(skelData:object) {
+    async add({skelData}) {
 
        
         if (!skelData) {
@@ -75,7 +75,7 @@ export default class List {
                 if (bone) {
                     if (typeof bone === "object") {
                         if (!skel[bonename].visible) {
-                            //delete skel[bonename] //?? must we delet it or handel we this client side
+                            //delete skel[bonename] //?? must we delete it or handel we this client side
                         }
                     }
                 } else {
@@ -91,7 +91,6 @@ export default class List {
         skel = this.unfoldSkel(skel);
 
         await skel.writeBones(modifiedData, true);
-        console.log("mod skel=>")
         var success = await skel.toDB();
 
         if (success) {
@@ -101,17 +100,19 @@ export default class List {
 
     }
     @exposed
-    async edit(
-        key:string,
-        skelData:object
-        ) {
+    async edit({
+        key,
+        skelData
+        }) {
         console.log("in edit=>")
         console.log(key, skelData)
         var skel = this.editSkel();
-        console.log(skel)
         if (!utils.isPostRequest()) {
-
-            await skel.fromDB(key);
+            console.log(await skel.fromDB(key));
+             if(!await skel.fromDB(key))
+            {
+            throw new Error().notFound();
+            }
             delete skel.kindname;
             //delete skel.key;
             delete skel.type;
@@ -135,15 +136,19 @@ export default class List {
         var modifiedData = this.prepareData(skelData);
 
 
-        await skel.fromDB(key);
+        if(!await skel.fromDB(key))
+        {
+            throw new Error().notFound();
+        }
         skel = this.unfoldSkel(skel)
         await skel.writeBones(modifiedData, true);
         var success = await skel.toDB();
-        console.log("is " + success)
+        console.log("is => " + success)
         if (success) {
 
             return this.render(this.editSuccessTemplate, skel.readBones())
         }
+        
 
     }
     /**
@@ -229,7 +234,6 @@ export default class List {
 
     }
     unfoldSkel(skel: Skeleton) {
-        console.log("unfold")
         var modifiedData = skel;
         for (const [boneName, boneArgs] of Object.entries(skel)) {
             if (boneArgs) {
@@ -244,8 +248,7 @@ export default class List {
             }
 
         }
-        console.log("mod dataa");
-        console.log(modifiedData)
+        
         return modifiedData;
     }
     // Get Skeleton by KindName

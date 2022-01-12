@@ -1,7 +1,7 @@
 /**
  * Record Bone 
  * Store the data in a dictionary
- * @param using Is a the name of the Refskel (I cant use the class because I must check if the Bone have a using the ref to the skel)
+ * @param using Is the Class 
  * example
  * Sekeleton A:
  *  recordBone(using="A") 
@@ -48,6 +48,7 @@ export class recordBone extends Bone {
         if (parent.classname() === using.name.toLowerCase()) {
             throw "Recordbone using is same Class as Parent "
         }
+        
 
 
 

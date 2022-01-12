@@ -148,7 +148,8 @@ export class Skeleton {
      * @returns {Boolen} If skel was found
      */
     async fromDB(key) {
-        const skelData = await db.get(this.kindname, key)
+        console.log("In form db")
+        const skelData = await db.get(this.kindname, key);
         if (skelData != null) {
             this.writeBones(skelData);
             return true
@@ -162,6 +163,7 @@ export class Skeleton {
 }
 export type SkeletonType = Skeleton;
 export class RefSkeleton extends Skeleton {
+
     constructor() {
         console.log("is ref")
         super(true);

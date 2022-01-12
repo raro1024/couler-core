@@ -42,15 +42,18 @@ export class passswordBone extends Bone {
         return password==crypto.createHash('sha256').update(salt+_val).digest('base64')
 
     }
-    renderer(boneName)
-    {
-    
-        return `
-        <label  for="${boneName}">${this.descr?this.descr:boneName}</label >
-        <input  type="password" name="${boneName}" id="${boneName}" placeholder="${this.descr}" ${this.required?"required":""} ${this.readonly?"required":""}></input>
-        `
+    renderer(boneName) {
+        let bone = super.renderer(boneName);
+        bone.childNodes[0].childNodes.forEach(node => {
+            if (node.tagName == "input") {
+                node["type"] = "password";
+               
+            }
+        });
 
-    }   
+        return bone;
+
+    }
 
 
 }

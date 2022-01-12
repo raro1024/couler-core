@@ -95,6 +95,7 @@ export async function get(module, query = {}, limit = 100) {
     var dataPromies = new Promise((resolve, reject) => {
 
         if (typeof query === "string") {
+            console.log("QUERY is string")
             query = {
                 "_id": ObjectId(query)
             }
@@ -109,7 +110,8 @@ export async function get(module, query = {}, limit = 100) {
             }
             //client.close();
             if (res != null && res.length > 0) {
-
+                console.log(`FETCH ${res.length} DATASETS from ${module}`)
+                console.log(res)
                 if (res.length == 1) {
                     resolve(res[0]);
 

@@ -1,4 +1,5 @@
 import {Bone} from "./bone";
+import { document } from 'html-element';
 
 export class selectBone extends Bone {
     options: any;
@@ -13,28 +14,62 @@ export class selectBone extends Bone {
             throw "No Options in Selectbone"
         }
     }
-    renderer(boneName)
-    {
-        console.log("render select")
-        return `
-        <div class="boneContainer"  data-multiple="${this.multiple?true:false}">
-            <label  for="${boneName}">${this.descr?this.descr:boneName}</label >
-            <select name="${boneName}${this.multiple?":0":""}" id="${boneName}" placeholder="${this.descr}" ${this.required?"required":""} ${this.readonly?"required":""}>
-                ${
-                    Object.keys(this.options).map((key)=>{
-                        if(this.defaultValue===key)
-                        {
-                            return `<option selected value="${key}">${this.options[key]}</option>`
-                        }
-                        else
-                        {
-                            return `<option value="${key}">${this.options[key]}</option>`
-                        }
-                })}
-            </select>
-        </div>
-        `
+   
+    renderer(boneName) {
+        let outerBone=document.createElement("div");
         
+        if(this.multiple && this._value)
+        {
+            for(let i =0;i<this._value.length;i++)
+            {
+                outerBone.appendChild(this.createBone(boneName,i));
+            }
+        }
+        else
+        {
+            outerBone.appendChild(this.createBone(boneName));
+           
+        }
+        return outerBone;
+
+    }
+    createBone(boneName,i=0)
+    {
+        
+        let container=document.createElement("div");
+        container["class"]="boneContainer";
+        container.setAttribute("data-multiple",`${this.multiple?true:false}`);
+        //Create Label
+        let inputLabel=document.createElement("label");
+        inputLabel["for"]="id";
+        inputLabel["id"]=boneName+"-label";
+        inputLabel.textContent=this.descr?this.descr:boneName;
+        container.appendChild(inputLabel);
+        //Create input
+        let input=document.createElement("select");
+        input["id"]=boneName;
+        input["name"]=boneName+(this.multiple?"."+i:"");
+
+        input["placeholder"]=this.descr;
+        if(this.required)
+        {
+            input["required"]=true;
+        }
+
+        if(this._value)
+        {
+            input["value"]=this.data[i];
+        }
+        for(const[key,value] of Object.entries(this.options))
+        {
+            var opt = document.createElement('option');
+            opt.value = key;
+            opt.innerHTML = value;
+            input.appendChild(opt);
+        }
+        container.appendChild(input);
+        return container;
+
     }
     
 }

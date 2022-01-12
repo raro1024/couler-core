@@ -100,9 +100,9 @@ export class Bone {
         return _val;
     }
     renderer(boneName) {
-
-        let outerBone=document.createElement("div");
         
+        let outerBone=document.createElement("div");
+        console.log(this._value)
         if(this.multiple && this._value)
         {
             for(let i =0;i<this._value.length;i++)
@@ -143,7 +143,7 @@ export class Bone {
 
         if(this._value)
         {
-            input["value"]=this.data[i];
+            input["value"]=this._value
         }
         container.appendChild(input);
         return container;
