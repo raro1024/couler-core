@@ -68,6 +68,36 @@ export class User extends List {
         }
 
     }
+    /**
+     * 
+     * @param data 
+     * 
+     * @returns True in Email and Password was ok
+     * Init the user
+     */
+    async verify(data)
+    {
+        var skel = this.loginSkel();
+        return await db.get("user", {
+            "name": data["name"]
+        }, 1).then(userdata => {
+            if (userdata) {
+               
+                skel.writeBones(userdata);
+                if (skel.password.check(data["password"])) {
+                    console.log("login success");
+                    utils.setUserSession(skel.key.data);
+                    return true
+                }
+            } else {
+                return false;
+            }
+
+        }).catch(() => {
+            return false;
+        });
+        
+    }
     @exposed
     async view({key}) {
 
@@ -93,11 +123,11 @@ export class User extends List {
         }
     }
     @exposed
-    async add({skelData}) {
+    async add(skelData:object) {
         return super.add(skelData);
     }
     @exposed
-    async edit({key,skelData}) {
+    async edit(key:string,skelData:object) {
         if(key==="self")
         {
             let user =await utils.getCurrentUser();

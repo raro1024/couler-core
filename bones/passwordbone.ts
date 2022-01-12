@@ -35,8 +35,9 @@ export class passswordBone extends Bone {
         
         this._value=_val;
     }
-    check(_val) // Not so save :()
+    check(_val) // Not so save :(
     {
+        console.log(_val)
         var [salt,password]=this._value.split("$");
         return password==crypto.createHash('sha256').update(salt+_val).digest('base64')
 

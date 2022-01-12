@@ -112,4 +112,27 @@ export function getCurrentModuleName()
     return requestmoduleName;
 
 }
-//export * as utils from "./utils";
+export function getParams(req) {
+    const module = req.params.module;
+    const handler = req.params.handler;
+    const key = req.params.key;
+    var params = {}
+    
+            if (key) {
+                params["key"] = key;
+            }
+            if (req.query !== undefined || Object.keys(req.query).length > 0) {
+                for (const [key_, val] of Object.entries(req.query)) {
+                    params[key_] = val;
+                }
+
+            }
+            if (req.body !== undefined || Object.keys(req.body).length > 0) {
+                for (const [key_, val] of Object.entries(req.body)) {
+                    params[key_] = val;
+                }
+            }
+            return params;
+ 
+}
+export * as utils from "./utils";

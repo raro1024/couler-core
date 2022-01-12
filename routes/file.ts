@@ -58,7 +58,7 @@ router.get('/file/download/:key', async(req, res) => {
     var filedata = (await db.get("file",req.params.key))[0]
     if(!filedata)
     {
-        new Error().send(404,"FILE not found",res)
+        throw new Error().notFound();
     }
     if(filedata["mode"]==="gridfs")
     {

@@ -20,17 +20,22 @@ export class Skeleton {
     key: stringBone;
     createdate: dateBone;
     changedate: dateBone;
-    constructor(isRef = false) {
+    constructor(isRef:boolean = false) {
         if (!isRef) {
 
-            this.key = new stringBone()
+            this.key = new stringBone({
+                visible: false,
+                readonly: true
+            })
             this.createdate = new dateBone({
                 defaultValue: Date.now(),
-                visible: false
+                visible: false,
+                readonly: true
             });
             this.changedate = new dateBone({
                 defaultValue: Date.now(),
-                visible: false
+                visible: false,
+                readonly: true
             });
 
         }
@@ -56,11 +61,15 @@ export class Skeleton {
         } else {
             for (const [bonename, bone] of Object.entries(this)) {
                 if (typeof bone === "object") {
+
                     if (fromClient) {
-                        bone.data = requestdata[bonename];
+                        if (!bone.readonly) { // Wen not accept Date that is readonly
+                            bone.data = requestdata[bonename];
+                        }
                     } else {
                         bone.rawdata = requestdata[bonename];
                     }
+
 
                 }
             }
@@ -151,6 +160,7 @@ export class Skeleton {
         return _class.constructor.name.toLowerCase();
     }
 }
+export type SkeletonType = Skeleton;
 export class RefSkeleton extends Skeleton {
     constructor() {
         console.log("is ref")

@@ -16,12 +16,12 @@ export class Test extends List {
         super();
     }
     @exposed
-    async add({skelData}) {
-        return super.add(this.addSkel(), skelData);
+    async add(skelData) {
+        return super.add( skelData);
     }
     @exposed
-    async edit({key,skelData}) {
-        return super.edit(this.editSkel(),key,skelData);
+    async edit(key:string,skelData:object) {
+        return super.edit(key,skelData);
     }
 
 }

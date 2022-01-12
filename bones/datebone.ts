@@ -22,7 +22,8 @@ export class dateBone extends Bone {
         unique = false,
         visible = true,
         date = true,
-        time = false
+        time = false,
+        readonly=false
     } = {}) {
         super({
             descr: descr,
@@ -30,7 +31,8 @@ export class dateBone extends Bone {
             defaultValue: defaultValue,
             required: required,
             unique: unique,
-            visible: visible
+            visible: visible,
+            readonly:readonly,
         });
         this.type = "date";
         this.date = date

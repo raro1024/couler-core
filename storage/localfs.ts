@@ -24,7 +24,7 @@ export async function sendFile(filedata, res) {
   });
 
   readStream.on('error', function (err) {
-    new Error().send(404,"FILE not found",res)
+    throw new Error().notFound();
   });
 
 
